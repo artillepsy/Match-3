@@ -2,7 +2,7 @@
 
 namespace Cells
 {
-    public class MovableGraphics : MonoBehaviour
+    public class IconMover : MonoBehaviour
     {
         
     }

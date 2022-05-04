@@ -20,25 +20,62 @@ namespace Grid
         
         [Header("Grid creation prefabs")] 
         [SerializeField] private Transform rowsParent;
-        [SerializeField] private GameObject rowPrefab;
+        [SerializeField] private Transform rowPrefab;
         [SerializeField] private GameObject emptyCellPrefab;
-        [SerializeField] private CellButton cellPrefab;
+        [SerializeField] private Cell cellPrefab;
         
-        private CellButton[,] _grid;
-        
-        private void Start() => InitBoard();
-        
-        private void InitBoard()
-        {
-            CellButton[,] grid;
-            
-            for (var i = 0; i < x; i++)
-            {
-                
-            }
-                
-        }
-        
+        private Cell[,] _grid;
 
+        private GridChecker _gridChecker;
+        
+        private void Start()
+        {
+            _grid = new Cell[x, y];
+
+            _gridChecker = FindObjectOfType<GridChecker>();
+            
+            InitGrid();
+            
+            InitCells();
+        }
+
+        private void InitGrid()
+        {
+            for (var i = 0; i < y; i++)
+            {
+                var row = Instantiate(rowPrefab, rowsParent);
+                
+                for (var j = 0; j < x; j++)
+                {
+                    var cell = Instantiate(cellPrefab, row);
+
+                    _grid[x, y] = cell;
+                }
+            }
+        }
+
+        private void InitCells()
+        {
+            var counter = 0;
+            
+            while (counter < emptyCellCount)
+            {
+                var i = Random.Range(0, x);
+                var j = Random.Range(0, x);
+                
+                if(_grid[i, j].Empty) continue;
+
+                counter++;
+            }
+            
+            foreach (var cell in _grid)
+            {
+                if(cell.Empty) continue;
+                
+                var variant = variants[Random.Range(0, variants.Count)];
+                    
+                cell.SetVariant(variant);
+            }
+        }
     }
 }
