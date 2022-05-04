@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Grid
 {
+    /// <summary>
+    /// Класс, хранящий данные массива ячеек. Имеет параметры инициализации в начале уровня.
+    /// </summary>
     public class GridContainer : MonoBehaviour
     {
         [Header("Grid dimension")]
@@ -21,60 +24,88 @@ namespace Grid
         [Header("Grid creation prefabs")] 
         [SerializeField] private Transform rowsParent;
         [SerializeField] private Transform rowPrefab;
-        [SerializeField] private GameObject emptyCellPrefab;
         [SerializeField] private Cell cellPrefab;
         
         private Cell[,] _grid;
 
-        private GridChecker _gridChecker;
-        
-        private void Start()
+        public Cell[,] Grid => _grid;
+
+        public static GridContainer Inst { get; private set; }
+
+        private void Awake()
         {
             _grid = new Cell[x, y];
 
-            _gridChecker = FindObjectOfType<GridChecker>();
-            
+            Inst = this;
+
             InitGrid();
             
-            InitCells();
+            InitEmptyCells();
+            
+            FillCells();
         }
 
         private void InitGrid()
         {
-            for (var i = 0; i < y; i++)
+            for (var j = 0; j < y; j++)
             {
                 var row = Instantiate(rowPrefab, rowsParent);
                 
-                for (var j = 0; j < x; j++)
+                for (var i = 0; i < x; i++)
                 {
                     var cell = Instantiate(cellPrefab, row);
+                    
+                    cell.SetPosition(i, j);
 
-                    _grid[x, y] = cell;
+                    _grid[i, j] = cell;
                 }
             }
         }
 
-        private void InitCells()
+        private void InitEmptyCells()
         {
             var counter = 0;
             
             while (counter < emptyCellCount)
             {
                 var i = Random.Range(0, x);
+                
                 var j = Random.Range(0, x);
                 
                 if(_grid[i, j].Empty) continue;
 
+                _grid[i, j].SetEmpty();
+                
                 counter++;
             }
-            
-            foreach (var cell in _grid)
+        }
+
+        private void FillCells()
+        {
+            for (var j = 0; j < y; j++)
             {
-                if(cell.Empty) continue;
+                for (var i = 0; i < x; i++)
+                {
+                    if(_grid[i, j].Empty) continue;
                 
-                var variant = variants[Random.Range(0, variants.Count)];
+                    var variant = GetFreeVariant(i, j);
                     
-                cell.SetVariant(variant);
+                    _grid[i, j].SetVariant(variant);
+                }
+            }
+        }
+
+        private CellVariant GetFreeVariant(int i, int j)
+        {
+            while (true)
+            {
+                var variant = variants[Random.Range(0, variants.Count)];
+                
+                if(i > 1 && _grid[i-1, j].Id == _grid[i-2, j].Id && _grid[i-1, j].Id == variant.Id) continue;
+                
+                if(j > 1 && _grid[i, j-1].Id == _grid[i, j-2].Id && _grid[i, j-1].Id == variant.Id) continue;
+                
+                return variant;
             }
         }
     }
