@@ -1,4 +1,5 @@
 ﻿using Core;
+using Items;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -6,64 +7,56 @@ using UnityEngine.UI;
 namespace Cells
 {
     /// <summary>
-    /// Класс, хранящийся в GridContainer. В нём изменяется лишь информация о текущем тайле и хранится текущий ID
+    /// Класс, хранящийся в GridContainer. В нём изменяется лишь информация о текущем предмете
     /// </summary>
     public class Cell : MonoBehaviour
     {
-        [SerializeField] private MovableIcon iconPrefab;
+        [SerializeField] private CellItem iconPrefab;
         
-        public static UnityEvent<Cell> OnClickCell;
-        private MovableIcon _icon;
-        private CellVariant _variant;
+        public static UnityEvent<Cell> OnClickCell = new UnityEvent<Cell>();
+        public CellItem Item;
         private Button _btn;
         private bool _empty = false;
-        private int _id;
+        
         private int _x;
         private int _y;
 
         public bool Empty => _empty;
 
-        public int Id => _id;
-
         public int X => _x;
         public int Y => _y;
         
-        public void SetVariant(CellVariant newVariant)
+        public void SetVariant(ItemVariant newVariant)
         {
-            _variant = newVariant;
-
-            _id = newVariant.Id;
+            Item = Instantiate(iconPrefab, transform);
             
-            _icon = Instantiate(iconPrefab, transform);
-            
-            _icon.SetColor(newVariant.CellColor);
-            
-            Debug.Log("New variant setted. Id: "+ newVariant.Id);
+            Item.SetVariant(newVariant);
         }
 
-        public void SetPosition(int x, int y)
+        public void SetGridPosition(int x, int y)
         {
             _x = x;
             
             _y = y;
         }
-
-        public void SetEmpty()
+        
+        public void SetEmptyStatus()
         {
-            _empty = true;
-            
-            InputListener.OnInputSettingsChanged.RemoveListener(SetButtonEnableStatus);
-            
             SetButtonEnableStatus(false);
+            
+            _empty = true;
         }
 
         private void Awake()
         {
-            OnClickCell = new UnityEvent<Cell>();
-            
             _btn = GetComponent<Button>();
-            
-            _btn.onClick.AddListener(() => OnClickCell?.Invoke(this));
+
+            _btn.onClick.AddListener(() =>
+            {
+                Debug.Log("Clicked");
+                
+                OnClickCell?.Invoke(this);
+            });
         }
 
         private void Start()
@@ -71,6 +64,11 @@ namespace Cells
             InputListener.OnInputSettingsChanged.AddListener(SetButtonEnableStatus);
         }
 
-        private void SetButtonEnableStatus(bool status) => _btn.enabled = status;
+        private void SetButtonEnableStatus(bool status)
+        {
+            if (_empty) return;
+            
+            _btn.enabled = status;
+        }
     }
 }

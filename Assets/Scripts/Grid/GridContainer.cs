@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Cells;
+using Items;
 using UnityEngine;
 
 namespace Grid
@@ -19,7 +20,7 @@ namespace Grid
         [SerializeField] private int emptyCellCount = 3;
 
         [Header("Unique items")] 
-        [SerializeField] private List<CellVariant> variants;
+        [SerializeField] private List<ItemVariant> variants;
         
         [Header("Grid creation prefabs")] 
         [SerializeField] private Transform rowsParent;
@@ -55,7 +56,7 @@ namespace Grid
                 {
                     var cell = Instantiate(cellPrefab, row);
                     
-                    cell.SetPosition(i, j);
+                    cell.SetGridPosition(i, j);
 
                     _grid[i, j] = cell;
                 }
@@ -74,7 +75,7 @@ namespace Grid
                 
                 if(_grid[i, j].Empty) continue;
 
-                _grid[i, j].SetEmpty();
+                _grid[i, j].SetEmptyStatus();
                 
                 counter++;
             }
@@ -95,15 +96,15 @@ namespace Grid
             }
         }
 
-        private CellVariant GetFreeVariant(int i, int j)
+        private ItemVariant GetFreeVariant(int i, int j)
         {
             while (true)
             {
                 var variant = variants[Random.Range(0, variants.Count)];
                 
-                if(i > 1 && _grid[i-1, j].Id == _grid[i-2, j].Id && _grid[i-1, j].Id == variant.Id) continue;
+                if(i > 1 && _grid[i-1, j].Item.Id == _grid[i-2, j].Item.Id && _grid[i-1, j].Item.Id == variant.Id) continue;
                 
-                if(j > 1 && _grid[i, j-1].Id == _grid[i, j-2].Id && _grid[i, j-1].Id == variant.Id) continue;
+                if(j > 1 && _grid[i, j-1].Item.Id == _grid[i, j-2].Item.Id && _grid[i, j-1].Item.Id == variant.Id) continue;
                 
                 return variant;
             }

@@ -1,4 +1,5 @@
 ﻿using Cells;
+using Items;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -14,7 +15,12 @@ namespace Core
         
         private void Awake() => OnInputSettingsChanged = new UnityEvent<bool>();
 
-        private void Start() => Cell.OnClickCell.AddListener(CheckSelection);
+        private void Start()
+        {
+            ItemMover.OnAllMoved.AddListener(() => OnInputSettingsChanged?.Invoke(true));
+            
+            Cell.OnClickCell.AddListener(CheckSelection);
+        }
 
         private void CheckSelection(Cell newCell)
         {
@@ -23,18 +29,33 @@ namespace Core
                 _lastCell = newCell;
                 return;
             }
-            
-            if (newCell.Id == _lastCell.Id) return;
+
+            if (newCell.Item.Id == _lastCell.Item.Id)
+            {
+                _lastCell = newCell;
+                return;
+            }
 
             var x = Mathf.Abs(newCell.X - _lastCell.X);
             
             var y = Mathf.Abs(newCell.Y - _lastCell.Y);
 
-            if (x == 1 && y == 1 || x > 1 || y > 1) return;
+            if (x == 1 && y == 1 || x > 1 || y > 1)
+            {
+                _lastCell = newCell;
+                return;
+            }
 
             Debug.Log("swap");
-            // swap
+            
+            ItemMover.Instance.SwapItems(_lastCell, newCell);
 
+            OnInputSettingsChanged?.Invoke(false);
+            
+            // check after all icons moved
+            
+            _lastCell = null;
+            // swap
         }
     }
 }

@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 
-namespace Cells
+namespace Items
 {
     [CreateAssetMenu(fileName = "Variant", menuName = "Variants/New variant", order = 0)]
-    public class CellVariant : ScriptableObject
+    public class ItemVariant : ScriptableObject
     {
-        //public Sprite CellSprite;
-
-        public Color CellColor;
+        public Color ItemColor;
 
         public int Id;
     }
