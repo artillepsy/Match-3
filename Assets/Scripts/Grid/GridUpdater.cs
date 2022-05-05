@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Cells;
 using UnityEngine;
 
@@ -14,7 +15,12 @@ namespace Grid
         public void UpdateGrid(List<Cell> cellsToRemove)
         {
             // заполнение идёт снизу вверх. Пустышки не учитываются
-            
+            // invoke OnGridUpdated? or OnAllMoved in item mover
+        }
+
+        private void Start()
+        {
+            GridChecker.OnFoundMatches.AddListener(UpdateGrid);
         }
     }
 }

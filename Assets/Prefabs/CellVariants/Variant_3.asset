@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8746bb895457448bbc3e2a2cc787c788, type: 3}
   m_Name: Variant_3
   m_EditorClassIdentifier: 
-  CellColor: {r: 0.12763119, g: 1, b: 0, a: 1}
+  ItemColor: {r: 0, g: 0.53779817, b: 1, a: 1}
   Id: 3

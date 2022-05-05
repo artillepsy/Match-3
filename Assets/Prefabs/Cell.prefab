@@ -135,3 +135,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   iconPrefab: {fileID: 92300517161730450, guid: 9bc8bb76d5dc0f543b5bd3e1dd1c6ffb, type: 3}
+  Item: {fileID: 92300517161730450, guid: 9bc8bb76d5dc0f543b5bd3e1dd1c6ffb, type: 3}

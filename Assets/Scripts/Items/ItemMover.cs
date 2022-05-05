@@ -6,11 +6,12 @@ namespace Items
 {
     public class ItemMover : MonoBehaviour
     {
-        public static UnityEvent OnAllMoved = new UnityEvent();
+        public static UnityEvent<bool> OnAllMoved = new UnityEvent<bool>();
         private int _remaining = 0;
+        private bool _undo = false;
         public static ItemMover Inst { get; private set; }
 
-        public void SwapItems(Cell firstCell, Cell secondCell)
+        public void SwapItems(Cell firstCell, Cell secondCell, bool undo = false)
         {
             var buff = firstCell.Item;
 
@@ -22,17 +23,18 @@ namespace Items
 
             secondCell.Item = buff;
 
+            _undo = undo;
+            
             _remaining = 2;
         }
 
         private void ReduceRemainingCount()
         {
-            if (--_remaining == 0)
-            {
-                OnAllMoved?.Invoke();
+            if (--_remaining != 0) return;
+            
+            OnAllMoved?.Invoke(_undo);
                 
-                Debug.Log("remaining = 0");
-            }
+            // Debug.Log("remaining = 0");
         }
 
         private void Awake() => Inst = this;

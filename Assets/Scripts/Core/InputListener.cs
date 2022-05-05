@@ -1,4 +1,5 @@
 ﻿using Cells;
+using Grid;
 using Items;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,8 +17,14 @@ namespace Core
 
         private void Start()
         {
-            ItemMover.OnAllMoved.AddListener(() => OnInputSettingsChanged?.Invoke(true));
+            ItemMover.OnAllMoved.AddListener((undo) =>
+            {
+                if (!undo) return;
+                
+                OnInputSettingsChanged?.Invoke(true);
+            });
             // add after checking
+            GridChecker.OnMathesNotFound.AddListener(UndoAction);
             
             Cell.OnClickCell.AddListener(CheckSelection);
         }
@@ -47,15 +54,23 @@ namespace Core
             }
 
             Debug.Log("swap");
+
+            _newCell = newCell;
             
-            ItemMover.Inst.SwapItems(_lastCell, newCell);
+            ItemMover.Inst.SwapItems(_lastCell, _newCell);
 
             OnInputSettingsChanged?.Invoke(false);
+        }
+
+        private void UndoAction()
+        {
+            Debug.Log("Undo");
             
-            // check after all icons moved
-            
+            ItemMover.Inst.SwapItems(_lastCell, _newCell, true);
+
+            _newCell = null;
+
             _lastCell = null;
-            // swap
         }
     }
 }
