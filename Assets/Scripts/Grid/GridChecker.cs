@@ -8,64 +8,27 @@ namespace Grid
 {
     public class GridChecker : MonoBehaviour
     {
-        public static UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
-        public static UnityEvent OnMatchesNotFound = new UnityEvent();
+        public static readonly UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
+        public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
         public GridChecker Inst { get; private set; }
 
         public void CheckForMatches()
         {
-            var grid = GridContainer.Inst.Grid;
-
             var cellsToClear = new List<Cell>();
 
-            for (var j = 0; j < grid.GetLength(1); j++)
-            {
-                var counterX = 0;
-                
-                for (var i = 1; i < grid.GetLength(0); i++)
-                {
-                    if (grid[i - 1, j].Item.Id == grid[i, j].Item.Id) counterX++;
-                    else if (counterX < 2) counterX = 0;
-                    else
-                    {
-                        for (var k = i - 1; counterX >= 0; k--, counterX--)
-                        {
-                            if(cellsToClear.Contains(grid[k, j])) continue;
-                            
-                            cellsToClear.Add(grid[k, j]);
-                        } 
-                        counterX = 0;
-                    }
-                }
-            }
+            var x = GridContainer.Inst.X;
             
-            for (var i = 0; i < grid.GetLength(0); i++)
-            {
-                var counterY = 0;
-                
-                for (var j = 1; j < grid.GetLength(1); j++)
-                {
-                    if (grid[i, j-1].Item.Id == grid[i, j].Item.Id) counterY++;
-                    else if (counterY < 2) counterY = 0;
-                    else
-                    {
-                        for (var k = j - 1; counterY >= 0; k--, counterY--)
-                        {
-                            if(cellsToClear.Contains(grid[i, k])) continue;
-                            
-                            cellsToClear.Add(grid[i, k]);
-                        }
-                        counterY = 0;
-                    }
-                }
-            }
+            var y = GridContainer.Inst.Y;
+
+            CheckXMatches(ref cellsToClear, x, y);
+            
+            CheckYMatches(ref cellsToClear, x, y);
 
             if (cellsToClear.Count > 0)
             {
-                Debug.Log("Match");
                 OnFoundMatches?.Invoke(cellsToClear);
             }
-            else OnMatchesNotFound?.Invoke();
+            else OnNoMatchesFound?.Invoke();
         }
 
         public void /*bool*/ FindPossibleMatches()
@@ -81,12 +44,101 @@ namespace Grid
 
         private void Start()
         {
-            ItemMover.OnAllMoved.AddListener((undo) =>
-            {
-                if (undo) return;
+            ItemMover.OnAllMoved.AddListener(CheckForMatches);
+        }
 
-                CheckForMatches();
-            });
+        private void CheckXMatches(ref List<Cell> cellsToClear, int x, int y)
+        {
+            var grid = GridContainer.Inst.Grid;
+            
+            for (var j = 0; j < y; j++)
+            {
+                var counter = 1;
+                var id = -1;
+
+                for (var i = 0; i < x; i++)
+                {
+                    var startCheck = false;
+
+                    if (grid[i, j].Empty)
+                    {
+                        id = -1;
+                        startCheck = true;
+                    }
+                    else if (id != grid[i, j].Item.Id)
+                    {
+                        id = grid[i, j].Item.Id;
+                        startCheck = true;
+                    }
+                    else counter++;
+                    
+                    if (!startCheck || i != x-1) continue;
+
+                    if (counter < 3)
+                    {
+                        counter = 1;
+                        if (id == -1) i++;
+                        continue;
+                    }
+                    
+                    for (var k = i - 1; counter > 0; k--, counter--)
+                    {
+                        if (cellsToClear.Contains(grid[k, j])) continue;
+                            
+                        cellsToClear.Add(grid[k, j]);
+                    } 
+                    
+                    counter = 1;
+                    if (id == -1) i++;
+                }
+            }
+        }
+        
+        private void CheckYMatches(ref List<Cell> cellsToClear, int x, int y)
+        {
+            var grid = GridContainer.Inst.Grid;
+            
+            for (var i = 0; i < x; i++)
+            {
+                var counter = 1;
+                var id = -1;
+
+                for (var j = 0; j < y; j++)
+                {
+                    var startCheck = false;
+
+                    if (grid[i, j].Empty)
+                    {
+                        id = -1;
+                        startCheck = true;
+                    }
+                    else if (id != grid[i, j].Item.Id)
+                    {
+                        id = grid[i, j].Item.Id;
+                        startCheck = true;
+                    }
+                    else counter++;
+                    
+                    if (!startCheck || j != y-1) continue;
+
+                    if (counter < 3)
+                    {
+                        counter = 1;
+                        if (id == -1) i++;
+                        continue;
+                    }
+                    
+                    for (var k = j - 1; counter > 0; k--, counter--)
+                    {
+                        if (cellsToClear.Contains(grid[i, k])) continue;
+                            
+                        cellsToClear.Add(grid[i, k]);
+                    } 
+                    
+                    counter = 1;
+                    if (id == -1) i++;
+                }
+            }
         }
     }
 }

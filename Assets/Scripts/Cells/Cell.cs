@@ -14,7 +14,7 @@ namespace Cells
         [SerializeField] private CellItem iconPrefab;
         
         public static UnityEvent<Cell> OnClickCell = new UnityEvent<Cell>();
-        public CellItem Item;
+        public CellItem Item { get; set; }
         private Button _btn;
         private bool _empty = false;
         
@@ -22,7 +22,6 @@ namespace Cells
         private int _y;
 
         public bool Empty => _empty;
-
         public int X => _x;
         public int Y => _y;
         
@@ -53,21 +52,19 @@ namespace Cells
 
             _btn.onClick.AddListener(() =>
             {
-                Debug.Log("Clicked");
-                
                 OnClickCell?.Invoke(this);
             });
         }
 
         private void Start()
         {
-            InputListener.OnInputSettingsChanged.AddListener(SetButtonEnableStatus);
+            InputListener.OnInputStatusChanged.AddListener(SetButtonEnableStatus);
         }
 
         private void SetButtonEnableStatus(bool status)
         {
             if (_empty) return;
-            
+  
             _btn.enabled = status;
         }
     }

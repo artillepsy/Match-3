@@ -32,9 +32,15 @@ namespace Grid
 
         public Cell[,] Grid => _grid;
 
-        public IEnumerable<ItemVariant> Variants => variants;
-
         public static GridContainer Inst { get; private set; }
+
+        public float Ystep { get; private set; }
+
+        public int X => x;
+        
+        public int Y => y;
+        
+        public ItemVariant Variant => variants[Random.Range(0, variants.Count)];
 
         private void Awake() => Inst = this;
 
@@ -44,9 +50,11 @@ namespace Grid
 
             InitGrid();
             
-            SetEmptyCells();
-            
             FillCells();
+            
+            SetEmptyCells();
+
+            Ystep = Mathf.Abs(_grid[0, 0].transform.position.y - _grid[0, 1].transform.position.y);
         }
 
         private void InitGrid()
@@ -77,6 +85,12 @@ namespace Grid
                 var j = Random.Range(0, x);
                 
                 if(_grid[i, j].Empty) continue;
+
+                var item = _grid[i, j].Item;
+                
+                Destroy(item.gameObject);
+
+                _grid[i, j].Item = null;
 
                 _grid[i, j].SetEmptyStatus();
                 

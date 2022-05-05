@@ -15,7 +15,7 @@ namespace Cells
             
             Cell.OnClickCell.AddListener(UpdatePosition);   
             
-            InputListener.OnInputSettingsChanged.AddListener((status) =>
+            InputListener.OnInputStatusChanged.AddListener((status) =>
             {
                 if (!status) _image.enabled = false;
             });

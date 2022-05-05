@@ -8,23 +8,21 @@ namespace Core
 {
     public class InputListener : MonoBehaviour
     {
-        public static UnityEvent<bool> OnInputSettingsChanged;
+        public static UnityEvent<bool> OnInputStatusChanged = new UnityEvent<bool>();
 
         private Cell _lastCell;
         private Cell _newCell;
-        
-        private void Awake() => OnInputSettingsChanged = new UnityEvent<bool>();
+        private bool _shouldUndo = false;
 
         private void Start()
         {
-            ItemMover.OnAllMoved.AddListener((undo) =>
+            GridChecker.OnFoundMatches.AddListener((cells) => _shouldUndo = false);
+            
+            GridChecker.OnNoMatchesFound.AddListener( () =>
             {
-                if (!undo) return;
-                
-                OnInputSettingsChanged?.Invoke(true);
+                if(_shouldUndo) UndoAction();
+                else ClearSelection();
             });
-            // add after checking
-            GridChecker.OnMatchesNotFound.AddListener(UndoAction);
             
             Cell.OnClickCell.AddListener(CheckSelection);
         }
@@ -53,24 +51,31 @@ namespace Core
                 return;
             }
 
-            Debug.Log("swap");
-
             _newCell = newCell;
             
             ItemMover.Inst.SwapItems(_lastCell, _newCell);
 
-            OnInputSettingsChanged?.Invoke(false);
+            _shouldUndo = true;
+
+            OnInputStatusChanged?.Invoke(false);
+        }
+
+        private void ClearSelection()
+        {
+            _shouldUndo = false;
+            
+            _newCell = null;
+
+            _lastCell = null;
+            
+            OnInputStatusChanged?.Invoke(true);
         }
 
         private void UndoAction()
         {
-            Debug.Log("Undo");
+            _shouldUndo = false;
             
-            ItemMover.Inst.SwapItems(_lastCell, _newCell, true);
-
-            _newCell = null;
-
-            _lastCell = null;
+            ItemMover.Inst.SwapItems(_lastCell, _newCell);
         }
     }
 }
