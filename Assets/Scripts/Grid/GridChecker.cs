@@ -13,6 +13,6 @@ namespace Grid
             
         }*/
 
-        private void Start() => _gridContainer = FindObjectOfType<GridContainer>();
+      //  private void Start() => _gridContainer = FindObjectOfType<GridContainer>();
     }
 }

@@ -5,10 +5,10 @@ namespace Cells
 {
     public class MovableIcon : MonoBehaviour
     {
-        public void SetSprite(Sprite sprite)
+        public void SetColor(Color color)
         {
             var image = GetComponent<Image>();
-            image.sprite = sprite;
+            image.color = color;
         }
     }
 }

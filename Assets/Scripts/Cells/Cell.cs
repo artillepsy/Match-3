@@ -36,7 +36,7 @@ namespace Cells
             
             _icon = Instantiate(iconPrefab, transform);
             
-            _icon.SetSprite(newVariant.CellSprite);
+            _icon.SetColor(newVariant.CellColor);
             
             Debug.Log("New variant setted. Id: "+ newVariant.Id);
         }
@@ -50,6 +50,8 @@ namespace Cells
 
         public void SetEmpty()
         {
+            _empty = true;
+            
             InputListener.OnInputSettingsChanged.RemoveListener(SetButtonEnableStatus);
             
             SetButtonEnableStatus(false);

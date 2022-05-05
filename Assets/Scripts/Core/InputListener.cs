@@ -18,6 +18,12 @@ namespace Core
 
         private void CheckSelection(Cell newCell)
         {
+            if (!_lastCell)
+            {
+                _lastCell = newCell;
+                return;
+            }
+            
             if (newCell.Id == _lastCell.Id) return;
 
             var x = Mathf.Abs(newCell.X - _lastCell.X);
@@ -25,7 +31,8 @@ namespace Core
             var y = Mathf.Abs(newCell.Y - _lastCell.Y);
 
             if (x == 1 && y == 1 || x > 1 || y > 1) return;
-            
+
+            Debug.Log("swap");
             // swap
 
         }

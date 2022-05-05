@@ -32,7 +32,7 @@ namespace Grid
 
         public static GridContainer Inst { get; private set; }
 
-        private void Awake()
+        private void Start()
         {
             _grid = new Cell[x, y];
 
