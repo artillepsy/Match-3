@@ -8,7 +8,7 @@ namespace Items
     {
         public static UnityEvent OnAllMoved = new UnityEvent();
         private int _remaining = 0;
-        public static ItemMover Instance { get; private set; }
+        public static ItemMover Inst { get; private set; }
 
         public void SwapItems(Cell firstCell, Cell secondCell)
         {
@@ -35,7 +35,7 @@ namespace Items
             }
         }
 
-        private void Awake() => Instance = this;
+        private void Awake() => Inst = this;
 
         private void Start()
         {

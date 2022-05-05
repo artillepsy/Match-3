@@ -4,15 +4,14 @@ namespace Grid
 {
     public class GridChecker : MonoBehaviour
     {
-        private GridContainer _gridContainer;
+        public GridChecker Inst { get; private set; }
+        
+        
 
-        /*public List<Cell> Matches()
-        {
-            var cells = new List<Cell>();
-            
-            
-        }*/
+        // после свапа проверить на наличие матчей. Если их нет - вернуть false
+        // после успешной проверки вызвать апдейт grid'a. После апдейта снова проверить,
+        // но сначала на матчи, а потом на то, могут ли они быть на сцене
 
-      //  private void Start() => _gridContainer = FindObjectOfType<GridContainer>();
+        private void Awake() => Inst = this;
     }
 }

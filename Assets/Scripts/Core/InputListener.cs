@@ -9,7 +9,6 @@ namespace Core
     {
         public static UnityEvent<bool> OnInputSettingsChanged;
 
-        // private bool _inputEnabled = true;
         private Cell _lastCell;
         private Cell _newCell;
         
@@ -18,6 +17,7 @@ namespace Core
         private void Start()
         {
             ItemMover.OnAllMoved.AddListener(() => OnInputSettingsChanged?.Invoke(true));
+            // add after checking
             
             Cell.OnClickCell.AddListener(CheckSelection);
         }
@@ -48,7 +48,7 @@ namespace Core
 
             Debug.Log("swap");
             
-            ItemMover.Instance.SwapItems(_lastCell, newCell);
+            ItemMover.Inst.SwapItems(_lastCell, newCell);
 
             OnInputSettingsChanged?.Invoke(false);
             

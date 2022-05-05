@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Cells
 {
-    public class SelectionBorder : MonoBehaviour
+    public class CellSelectionBorder : MonoBehaviour
     {
         private Image _image;
         private void Start()

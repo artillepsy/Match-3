@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cells;
 using Items;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Grid
 {
@@ -33,15 +34,15 @@ namespace Grid
 
         public static GridContainer Inst { get; private set; }
 
+        private void Awake() => Inst = this;
+
         private void Start()
         {
             _grid = new Cell[x, y];
 
-            Inst = this;
-
             InitGrid();
             
-            InitEmptyCells();
+            SetEmptyCells();
             
             FillCells();
         }
@@ -63,7 +64,7 @@ namespace Grid
             }
         }
 
-        private void InitEmptyCells()
+        private void SetEmptyCells()
         {
             var counter = 0;
             
