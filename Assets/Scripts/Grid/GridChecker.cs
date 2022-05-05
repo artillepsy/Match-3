@@ -16,13 +16,9 @@ namespace Grid
         {
             var cellsToClear = new List<Cell>();
 
-            var x = GridContainer.Inst.X;
+            GridCheckHelper.CheckXMatches(cellsToClear);
             
-            var y = GridContainer.Inst.Y;
-
-            CheckXMatches(ref cellsToClear, x, y);
-            
-            CheckYMatches(ref cellsToClear, x, y);
+            GridCheckHelper.CheckYMatches(cellsToClear);
 
             if (cellsToClear.Count > 0)
             {
@@ -31,9 +27,22 @@ namespace Grid
             else OnNoMatchesFound?.Invoke();
         }
 
-        public void /*bool*/ FindPossibleMatches()
+        public void FindPossibleMatches()
         {
-            
+            var x = GridContainer.Inst.X;
+            var y = GridContainer.Inst.Y;
+            var grid = GridContainer.Inst.Grid;
+
+            for (var j = 1; j < y - 1; j++)
+            {
+                for (var i = 1; i < x - 1; i++)
+                {
+                    if (GridCheckHelper.CanMatchDiagonals(i, j))
+                    {
+                        // return true
+                    }
+                }
+            }
         }
 
         // после свапа проверить на наличие матчей. Если их нет - вернуть false
@@ -47,98 +56,6 @@ namespace Grid
             ItemMover.OnAllMoved.AddListener(CheckForMatches);
         }
 
-        private void CheckXMatches(ref List<Cell> cellsToClear, int x, int y)
-        {
-            var grid = GridContainer.Inst.Grid;
-            
-            for (var j = 0; j < y; j++)
-            {
-                var counter = 1;
-                var id = -1;
-
-                for (var i = 0; i < x; i++)
-                {
-                    var startCheck = false;
-
-                    if (grid[i, j].Empty)
-                    {
-                        id = -1;
-                        startCheck = true;
-                    }
-                    else if (id != grid[i, j].Item.Id)
-                    {
-                        id = grid[i, j].Item.Id;
-                        startCheck = true;
-                    }
-                    else counter++;
-                    
-                    if (!startCheck || i != x-1) continue;
-
-                    if (counter < 3)
-                    {
-                        counter = 1;
-                        if (id == -1) i++;
-                        continue;
-                    }
-                    
-                    for (var k = i - 1; counter > 0; k--, counter--)
-                    {
-                        if (cellsToClear.Contains(grid[k, j])) continue;
-                            
-                        cellsToClear.Add(grid[k, j]);
-                    } 
-                    
-                    counter = 1;
-                    if (id == -1) i++;
-                }
-            }
-        }
         
-        private void CheckYMatches(ref List<Cell> cellsToClear, int x, int y)
-        {
-            var grid = GridContainer.Inst.Grid;
-            
-            for (var i = 0; i < x; i++)
-            {
-                var counter = 1;
-                var id = -1;
-
-                for (var j = 0; j < y; j++)
-                {
-                    var startCheck = false;
-
-                    if (grid[i, j].Empty)
-                    {
-                        id = -1;
-                        startCheck = true;
-                    }
-                    else if (id != grid[i, j].Item.Id)
-                    {
-                        id = grid[i, j].Item.Id;
-                        startCheck = true;
-                    }
-                    else counter++;
-                    
-                    if (!startCheck || j != y-1) continue;
-
-                    if (counter < 3)
-                    {
-                        counter = 1;
-                        if (id == -1) i++;
-                        continue;
-                    }
-                    
-                    for (var k = j - 1; counter > 0; k--, counter--)
-                    {
-                        if (cellsToClear.Contains(grid[i, k])) continue;
-                            
-                        cellsToClear.Add(grid[i, k]);
-                    } 
-                    
-                    counter = 1;
-                    if (id == -1) i++;
-                }
-            }
-        }
     }
 }

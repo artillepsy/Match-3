@@ -56,10 +56,6 @@ namespace Grid
                     ItemMover.Inst.MoveItem(grid[i, j], pos);
                 }
             }
-            
-           // OnGridUpdated?.Invoke();
-            // заполнение идёт снизу вверх. Пустышки не учитываются
-            // invoke OnGridUpdated? or OnAllMoved in item mover
         }
 
         private void Start()
