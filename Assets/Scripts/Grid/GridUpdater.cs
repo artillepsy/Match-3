@@ -12,8 +12,27 @@ namespace Grid
             // вызывается, когда на поле не может быть матчей
         }
 
-        public void UpdateGrid(List<Cell> cellsToRemove)
+        public void UpdateGrid(List<Cell> cellsToClear)
         {
+            foreach (var cell in cellsToClear)
+            {
+                var item = cell.Item;
+                
+                Destroy(item.gameObject);
+                
+                item.transform.SetParent(null);
+
+                cell.Item = null;
+            }
+
+            var grid = GridContainer.Inst.Grid;
+            
+            var variants = GridContainer.Inst.Variants;
+            
+            
+
+
+
             // заполнение идёт снизу вверх. Пустышки не учитываются
             // invoke OnGridUpdated? or OnAllMoved in item mover
         }

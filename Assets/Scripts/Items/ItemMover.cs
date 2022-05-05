@@ -28,6 +28,19 @@ namespace Items
             _remaining = 2;
         }
 
+        public void MoveItem(Cell currentCell, Cell newCell)
+        {
+            var item = currentCell.Item;
+
+            currentCell.Item = null;
+            
+            item.MoveToCell(newCell);
+        }
+
+        public void MoveItem(CellItem item, Cell newCell) => item.MoveToCell(newCell);
+
+        public void SetRemaining(int newRemaining) => _remaining = newRemaining;
+
         private void ReduceRemainingCount()
         {
             if (--_remaining != 0) return;

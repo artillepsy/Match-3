@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Cells;
 using Items;
 using UnityEngine;
@@ -10,14 +9,14 @@ namespace Grid
     public class GridChecker : MonoBehaviour
     {
         public static UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
-        public static UnityEvent OnMathesNotFound = new UnityEvent();
+        public static UnityEvent OnMatchesNotFound = new UnityEvent();
         public GridChecker Inst { get; private set; }
 
         public void CheckForMatches()
         {
             var grid = GridContainer.Inst.Grid;
 
-            var cellsToRemove = new List<Cell>();
+            var cellsToClear = new List<Cell>();
 
             for (var j = 0; j < grid.GetLength(1); j++)
             {
@@ -26,15 +25,15 @@ namespace Grid
                 for (var i = 1; i < grid.GetLength(0); i++)
                 {
                     if (grid[i - 1, j].Item.Id == grid[i, j].Item.Id) counterX++;
-                    else if (counterX < 3) counterX = 0;
+                    else if (counterX < 2) counterX = 0;
                     else
                     {
                         for (var k = i - 1; counterX >= 0; k--, counterX--)
                         {
-                            if(cellsToRemove.Contains(grid[k, j])) continue;
+                            if(cellsToClear.Contains(grid[k, j])) continue;
                             
-                            cellsToRemove.Add(grid[k, j]);
-                        }
+                            cellsToClear.Add(grid[k, j]);
+                        } 
                         counterX = 0;
                     }
                 }
@@ -47,21 +46,26 @@ namespace Grid
                 for (var j = 1; j < grid.GetLength(1); j++)
                 {
                     if (grid[i, j-1].Item.Id == grid[i, j].Item.Id) counterY++;
-                    else if (counterY < 3) counterY = 0;
+                    else if (counterY < 2) counterY = 0;
                     else
                     {
                         for (var k = j - 1; counterY >= 0; k--, counterY--)
                         {
-                            if(cellsToRemove.Contains(grid[i, k])) continue;
+                            if(cellsToClear.Contains(grid[i, k])) continue;
                             
-                            cellsToRemove.Add(grid[i, k]);
+                            cellsToClear.Add(grid[i, k]);
                         }
                         counterY = 0;
                     }
                 }
             }
-            if(cellsToRemove.Count > 0) OnFoundMatches?.Invoke(cellsToRemove);
-            else OnMathesNotFound?.Invoke();
+
+            if (cellsToClear.Count > 0)
+            {
+                Debug.Log("Match");
+                OnFoundMatches?.Invoke(cellsToClear);
+            }
+            else OnMatchesNotFound?.Invoke();
         }
 
         public void /*bool*/ FindPossibleMatches()

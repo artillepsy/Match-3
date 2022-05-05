@@ -32,6 +32,8 @@ namespace Grid
 
         public Cell[,] Grid => _grid;
 
+        public IEnumerable<ItemVariant> Variants => variants;
+
         public static GridContainer Inst { get; private set; }
 
         private void Awake() => Inst = this;

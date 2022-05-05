@@ -24,7 +24,7 @@ namespace Core
                 OnInputSettingsChanged?.Invoke(true);
             });
             // add after checking
-            GridChecker.OnMathesNotFound.AddListener(UndoAction);
+            GridChecker.OnMatchesNotFound.AddListener(UndoAction);
             
             Cell.OnClickCell.AddListener(CheckSelection);
         }
