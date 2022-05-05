@@ -16,10 +16,11 @@ namespace Grid
 
         public void UpdateGrid(List<Cell> cellsToClear)
         {
-            var reserved = new List<Vector2>();
+            var busyPoints = new List<Vector2>();
             var grid = GridContainer.Inst.Grid;
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
+            var step = GridContainer.Inst.Ystep;
             
             ClearCells(cellsToClear);
 
@@ -39,17 +40,15 @@ namespace Grid
 
                         break;
                     }
-                    
                     if (k < y) continue;
 
-                    var pos = (Vector2)grid[i, y - 1].transform.position;
-                    
-                    var step = GridContainer.Inst.Ystep;
+                    var pos = (Vector2) grid[i, y - 1].transform.position;
 
-                    while(reserved.Contains(pos))
+                    while (busyPoints.Contains(pos))
                     {
-                        pos.y += step;
+                        pos.y -= step;
                     }
+                    busyPoints.Add(pos);
                     
                     grid[i, j].SetVariant(GridContainer.Inst.Variant);
                     

@@ -16,9 +16,9 @@ namespace Grid
         {
             var cellsToClear = new List<Cell>();
 
-            GridCheckHelper.CheckXMatches(cellsToClear);
+            GridCheckHelper.CheckXMatches(ref cellsToClear);
             
-            GridCheckHelper.CheckYMatches(cellsToClear);
+            GridCheckHelper.CheckYMatches(ref cellsToClear);
 
             if (cellsToClear.Count > 0)
             {
@@ -42,6 +42,7 @@ namespace Grid
                 {-1, 0, 1,-1, 1, 0,-1, 1,-1},
                 { 1,-1, 1, 0,-1, 1,-1, 0, 1}
             };
+            
             for (var j = 1; j < y - 1; j++)
             {
                 for (var i = 1; i < x - 1; i++)

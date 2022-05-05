@@ -10,7 +10,7 @@ namespace Items
         private int _remaining = 0;
         public static ItemMover Inst { get; private set; }
 
-        public void SwapItems(Cell firstCell, Cell secondCell)
+        public void SwapItems(Cell firstCell, Cell secondCell, bool undo = false)
         {
             var buff = firstCell.Item;
 
@@ -22,7 +22,7 @@ namespace Items
 
             secondCell.Item = buff;
             
-            _remaining = 2;
+            _remaining = undo ? 0 : 2;
         }
 
         public void MoveItem(Cell currentCell, Cell newCell)
@@ -50,8 +50,6 @@ namespace Items
         private void ReduceRemainingCount()
         {
             if (--_remaining != 0) return;
-
-            Debug.Log(_remaining);
             
             OnAllMoved?.Invoke();
         }

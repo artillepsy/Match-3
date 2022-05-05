@@ -34,7 +34,7 @@ namespace Grid
 
         public static GridContainer Inst { get; private set; }
 
-        public float Ystep { get; private set; }
+        public float Ystep => Mathf.Abs(_grid[0, 0].transform.position.y - _grid[0, 1].transform.position.y);
 
         public int X => x;
         
@@ -53,10 +53,8 @@ namespace Grid
             FillCells();
             
             SetEmptyCells();
-
-            Ystep = Mathf.Abs(_grid[0, 0].transform.position.y - _grid[0, 1].transform.position.y);
         }
-
+        
         private void InitGrid()
         {
             for (var j = 0; j < y; j++)

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Cells;
-using Unity.VisualScripting;
 
 namespace Grid
 {
     public static class GridCheckHelper
     {
-        public static void CheckXMatches(List<Cell> cellsToClear)
+        public static void CheckXMatches(ref List<Cell> cellsToClear)
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
@@ -52,7 +51,7 @@ namespace Grid
             }
         }
         
-        public static void CheckYMatches(List<Cell> cellsToClear)
+        public static void CheckYMatches(ref List<Cell> cellsToClear)
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;

@@ -75,7 +75,7 @@ namespace Core
         {
             _shouldUndo = false;
             
-            ItemMover.Inst.SwapItems(_lastCell, _newCell);
+            ItemMover.Inst.SwapItems(_lastCell, _newCell, true);
         }
     }
 }
