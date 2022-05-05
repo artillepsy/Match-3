@@ -31,16 +31,24 @@ namespace Grid
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
-            var grid = GridContainer.Inst.Grid;
-
+            
+            var diagonalCheckArray = new int[2, 5]
+            {
+                { -1,  1, 1, -1, -1},
+                { -1, -1, 1,  1, -1}
+            };
+            var crossCheckArray = new int[2, 9]
+            {
+                {-1, 0, 1,-1, 1, 0,-1, 1,-1},
+                { 1,-1, 1, 0,-1, 1,-1, 0, 1}
+            };
             for (var j = 1; j < y - 1; j++)
             {
                 for (var i = 1; i < x - 1; i++)
                 {
-                    if (GridCheckHelper.CanMatchDiagonals(i, j))
-                    {
-                        // return true
-                    }
+                    if (!GridCheckHelper.CanMatch(i, j, diagonalCheckArray)) continue;
+                    
+                    if (!GridCheckHelper.CanMatch(i, j, crossCheckArray)) continue;
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cells;
+using Unity.VisualScripting;
 
 namespace Grid
 {
@@ -98,7 +99,7 @@ namespace Grid
             }
         }
         
-        public static bool CanMatchDiagonals(int i, int j)
+        public static bool CanMatch(int i, int j, int[,] arr)
         {
             var grid = GridContainer.Inst.Grid;
 
@@ -106,29 +107,16 @@ namespace Grid
 
             var id = grid[i, j].Item.Id;
 
-            if (!grid[i - 1, j - 1].Empty) // LU
+            for (var k = 0; k < arr.Length-1; k++)
             {
-                if (!grid[i + 1, j - 1].Empty) // RU
-                {
-                    if (grid[i - 1, j - 1].Item.Id == grid[i + 1, j - 1].Item.Id) return true; //LU ? RU
-                }
-                if (!grid[i - 1, j + 1].Empty) // LD
-                {
-                    if (grid[i - 1, j - 1].Item.Id == grid[i - 1, j + 1].Item.Id) return true; // LU ? LD
-                }
-            }
-            if (!grid[i + 1, j + 1].Empty) // RD
-            {
-                if (!grid[i + 1, j - 1].Empty) // RU
-                {
-                    if (grid[i + 1, j + 1].Item.Id == grid[i + 1, j - 1].Item.Id) return true; // RD ? RU
-                }
-                if (!grid[i - 1, j + 1].Empty) // LD
-                {
-                    if (grid[i + 1, j + 1].Item.Id == grid[i - 1, j + 1].Item.Id) return true; // RD ? LD
-                }
-            }
+                var cell1 = grid[i + arr[0, k], j + arr[1, k]];
+                
+                var cell2 = grid[i + arr[0, k+1], j + arr[1, k+1]];
+                
+                if (cell1.Empty || cell2.Empty) continue;
 
+                if (cell1.Item.Id == id && cell2.Item.Id == id) return true;
+            }
             return false;
         }
     }
