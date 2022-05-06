@@ -3,6 +3,7 @@ using Grid;
 using Items;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -27,17 +28,24 @@ namespace Core
             Cell.OnClickCell.AddListener(CheckSelection);
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Mouse1)) SceneManager.LoadSceneAsync("Game");
+        }
+
         private void CheckSelection(Cell newCell)
         {
             if (!_lastCell)
             {
                 _lastCell = newCell;
+                
                 return;
             }
 
             if (newCell.Item.Id == _lastCell.Item.Id)
             {
                 _lastCell = newCell;
+                
                 return;
             }
 
@@ -48,6 +56,7 @@ namespace Core
             if (x == 1 && y == 1 || x > 1 || y > 1)
             {
                 _lastCell = newCell;
+                
                 return;
             }
 
@@ -75,7 +84,7 @@ namespace Core
         {
             _shouldUndo = false;
             
-            ItemMover.Inst.SwapItems(_lastCell, _newCell, true);
+            ItemMover.Inst.SwapItems(_lastCell, _newCell);
         }
     }
 }

@@ -20,10 +20,11 @@ namespace Grid
             
             GridCheckHelper.CheckYMatches(ref cellsToClear);
 
-            if (cellsToClear.Count > 0)
-            {
-                OnFoundMatches?.Invoke(cellsToClear);
-            }
+           // Debug.Log("Checked grid");
+
+          //  Debug.Break();
+            
+            if (cellsToClear.Count > 0) OnFoundMatches?.Invoke(cellsToClear);
             else OnNoMatchesFound?.Invoke();
         }
 
@@ -64,7 +65,5 @@ namespace Grid
         {
             ItemMover.OnAllMoved.AddListener(CheckForMatches);
         }
-
-        
     }
 }

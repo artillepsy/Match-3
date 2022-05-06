@@ -39,18 +39,18 @@ namespace Items
         {
             while (true)
             {
+                
                var pos = Vector2.MoveTowards(
                    transform.position, 
                    _endPosition, 
                    speed * Time.deltaTime);
 
-               if (pos == _endPosition) break;
+               if (pos == _endPosition)  break;
 
                transform.position = pos;
 
                yield return null;
             }
-           
             OnMoved?.Invoke();
         }
     }

@@ -40,7 +40,7 @@ namespace Grid
 
                         continue;
                     }
-                    for (var k = i - 1; counter > 0; k--, counter--)
+                    for (var k = (i == x - 1) ? i : (i - 1); counter > 0; k--, counter--)
                     {
                         if (cellsToClear.Contains(grid[k, j])) continue;
                             
@@ -87,7 +87,7 @@ namespace Grid
                         
                         continue;
                     }
-                    for (var k = j - 1; counter > 0; k--, counter--)
+                    for (var k = (j == x - 1) ? j : (j - 1); counter > 0; k--, counter--)
                     {
                         if (cellsToClear.Contains(grid[i, k])) continue;
                             
