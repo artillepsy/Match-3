@@ -5,7 +5,7 @@ namespace Grid
 {
     public static class GridCheckHelper
     {
-        public static void CheckXMatches(ref List<Cell> cellsToClear)
+        public static void CheckXMatches(ref List<Cell> cellBuff)
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
@@ -42,16 +42,16 @@ namespace Grid
                     }
                     for (var k = (i == x - 1 && !startCheck) ? i : (i - 1); counter > 0; k--, counter--)
                     {
-                        if (cellsToClear.Contains(grid[k, j])) continue;
+                        if (cellBuff.Contains(grid[k, j])) continue;
                             
-                        cellsToClear.Add(grid[k, j]);
+                        cellBuff.Add(grid[k, j]);
                     } 
                     counter = 1;
                 }
             }
         }
         
-        public static void CheckYMatches(ref List<Cell> cellsToClear)
+        public static void CheckYMatches(ref List<Cell> cellBuff)
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
@@ -89,9 +89,9 @@ namespace Grid
                     }
                     for (var k = (j == y - 1 && !startCheck) ? j : (j - 1); counter > 0; k--, counter--)
                     {
-                        if (cellsToClear.Contains(grid[i, k])) continue;
+                        if (cellBuff.Contains(grid[i, k])) continue;
                             
-                        cellsToClear.Add(grid[i, k]);
+                        cellBuff.Add(grid[i, k]);
                     } 
                     counter = 1;
                 }

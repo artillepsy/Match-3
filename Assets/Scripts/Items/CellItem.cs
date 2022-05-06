@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Cells;
 using UnityEngine;
 using UnityEngine.Events;
@@ -40,15 +39,14 @@ namespace Items
         {
             while (true)
             {
-                
                var pos = Vector2.MoveTowards(
                    transform.position, 
                    _endPosition, 
                    speed * Time.deltaTime);
 
-               if (pos == _endPosition)  break;
-
                transform.position = pos;
+               
+               if (pos == _endPosition)  break;
 
                yield return null;
             }

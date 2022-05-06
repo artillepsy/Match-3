@@ -8,14 +8,8 @@ namespace Grid
     public class GridUpdater : MonoBehaviour
     {
         [SerializeField] private CellItem itemPrefab;
-        
-        
-        public void ReformGrid()
-        {
-            // вызывается, когда на поле не может быть матчей
-        }
 
-        public void UpdateGrid()
+        private void UpdateGrid()
         {
             var busyPoints = new List<Vector2>();
             var grid = GridContainer.Inst.Grid;
@@ -58,8 +52,6 @@ namespace Grid
                     grid[i, j].Item = item;
                      
                     item.SetVariant(GridContainer.Inst.Variant);
-                     
-                   // Debug.Log("ID: "+ grid[i, j].Item.Id);
                     
                     ItemMover.Inst.MoveItem(grid[i, j]);
                 }
@@ -70,43 +62,25 @@ namespace Grid
         {
             GridChecker.OnFoundMatches.AddListener((cellsToClear) =>
             {
-                //Debug.Log("Invoked in gridUpdater");
-
-                //Debug.Break();
-                
                 ClearCells(cellsToClear);
                 
-               // Debug.Log("Cleared cells");
-
-               // Debug.Break();
-                
                 UpdateGrid();
-                
-                //Debug.Log("Updated Grid");
-
-                //Debug.Break();
             });
         }
 
         private void ClearCells(List<Cell> cells)
         {
-          //  Debug.Log("cell count: " + cells.Count);
-           // Debug.Log("-----------------------------------");
-            
             foreach (var cell in cells)
             {
                 var item = cell.Item;
                 if (!item)
                 {
-                    //Debug.Log("null");
                     Debug.LogError("Del: ("+cell.X+", "+cell.Y+"). Item: null "+ item);
                     
                     Debug.Break();
                     
                     continue;
                 }
-
-               // Debug.Log("Del: ("+cell.X+", "+cell.Y+"). Item: "+ item);
               
                 item.transform.SetParent(null);
                 
@@ -114,8 +88,6 @@ namespace Grid
                 
                 Destroy(item.gameObject);
             }
-
-          //  Debug.Break();
         }
     }
 }

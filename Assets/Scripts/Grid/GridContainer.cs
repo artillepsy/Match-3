@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Cells;
 using Items;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -41,6 +42,17 @@ namespace Grid
         public int Y => y;
         
         public ItemVariant Variant => variants[Random.Range(0, variants.Count)];
+
+        public List<Cell> GetAllCells()
+        {
+            var cellBuff = new List<Cell>();
+
+            foreach (var cell in _grid)
+            {
+                cellBuff.Add(cell);
+            }
+            return cellBuff;
+        }
 
         private void Awake() => Inst = this;
 
