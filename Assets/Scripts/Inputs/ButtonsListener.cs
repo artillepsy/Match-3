@@ -2,25 +2,29 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Core
+namespace Inputs
 {
-    public class LevelChanger : MonoBehaviour
+    public class ButtonsListener : MonoBehaviour
     {
         private GridReformer _gridReformer;
+        private bool _inputStatus = true;
         
         public void OnClickRestartLevel()
         {
             SceneManager.LoadSceneAsync("Game");
         }
-        
+
         public void OnClickReformWithNoMatches()
         {
+            if (!_inputStatus) return;
             _gridReformer.ReformGridWithNoMatches();
         }
 
-        private void Awake()
+        private void Awake() => _gridReformer = GetComponent<GridReformer>();
+
+        private void Start()
         {
-            _gridReformer = GetComponent<GridReformer>();
+            CellButtonsListener.OnInputStatusChanged.AddListener((status) => _inputStatus = status);
         }
     }
 }

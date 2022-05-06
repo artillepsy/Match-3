@@ -8,7 +8,7 @@ namespace Items
 {
     public class CellItem : MonoBehaviour
     {
-        [SerializeField] private float speed = 100f;
+        [SerializeField] private float speed = 500f;
         
         public static UnityEvent OnMoved = new UnityEvent();
         private Vector2 _translation;
@@ -20,18 +20,14 @@ namespace Items
         public void SetVariant(ItemVariant variant)
         {
             var image = GetComponent<Image>();
-            
             image.color = variant.ItemColor;
-
             _id = variant.Id;
         }
 
         public void MoveToCell(Cell cell)
         {
             _endPosition = cell.transform.position;
-            
             transform.SetParent(cell.transform);
-
             StartCoroutine(MoveCO());
         }
 
@@ -45,9 +41,7 @@ namespace Items
                    speed * Time.deltaTime);
 
                transform.position = pos;
-               
                if (pos == _endPosition)  break;
-
                yield return null;
             }
             OnMoved?.Invoke();

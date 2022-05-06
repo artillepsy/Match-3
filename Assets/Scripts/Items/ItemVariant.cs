@@ -6,7 +6,6 @@ namespace Items
     public class ItemVariant : ScriptableObject
     {
         public Color ItemColor;
-
         public int Id;
     }
 }

@@ -125,24 +125,15 @@ namespace Grid
             for (var j = 0; j < y; j++)
             {
                 for (var i = 0; i < x; i++)
-                {
-                    if (CanMatch(i, j, _diagonalCheckArray))
-                    {
-                        Debug.Log("("+i+", "+ j +") diagonal");
-                        return true;
-                    }
-
-                    if (CanMatch(i, j, _crossCheckArray))
-                    {
-                        Debug.Log("("+i+", "+ j +") cross");
-                        return true;
-                    }
-
-                    if (CanMatch(i, j, _farCheckArray))
-                    {
-                        Debug.Log("("+i+", "+ j +") far");
-                        return true;
-                    }
+                { 
+                    Debug.Log(" ");
+                    Debug.Log("elem ("+i+", "+ j +") ");
+                    Debug.Log(" ");
+                    
+                    if (CanMatch(i, j, _diagonalCheckArray)) return true;
+                    if (CanMatch(i, j, _crossCheckArray)) return true;
+                    if (CanMatch(i, j, _farCheckArray)) return true;
+                   
                 }
             }
             return false;
@@ -150,30 +141,33 @@ namespace Grid
 
         private static bool CanMatch(int i, int j, int[,] arr)
         {
+            Debug.Log("CanMatch");
             var grid = GridContainer.Inst.Grid;
-            
             if (grid[i, j].Empty) return false;
-
             var id = grid[i, j].Item.Id;
 
-            for (var k = 0; k < arr.GetLength(0) - 1; k++)
+            for (var k = 0; k < arr.GetLength(1) - 1; k++)
             {
                 if (!TryGetCell(i + arr[0, k], j + arr[1, k], out var cell1)) continue;
-                
                 if (!TryGetCell(i + arr[0, k + 1], j + arr[1, k + 1], out var cell2)) continue;
-                
                 if (cell1.Empty || cell2.Empty) continue;
+
+
 
                 if (cell1.Item.Id == id && cell2.Item.Id == id)
                 {
-                    Debug.Log(k);
-                    Debug.Log("("+arr[0, k]+", "+ arr[1, k] +") k");
-                    Debug.Log("("+arr[0, k+1]+", "+ arr[1, k+1] +") k+1");
-                    Debug.Log("("+cell1.X+", "+ cell1.Y +") cell1");
-                    Debug.Log("("+cell2.X+", "+ cell2.Y +") cell2");
+                   // Debug.Log("return true");
                     return true;
                 }
+                
+                /*Debug.Log("[k] ("+arr[0, k]+", "+ arr[1, k] +") ");
+                Debug.Log("[k+1] ("+arr[0, k+1]+", "+ arr[1, k+1] +") ");
+                Debug.Log("c1 ("+cell1.X+", "+ cell1.Y +") id: "+ cell1.Item.Id);
+                Debug.Log("c2 ("+cell2.X+", "+ cell2.Y +")  id: "+ cell2.Item.Id);
+                Debug.Log("---------------------------------");*/
             }
+
+            Debug.Log("k = " + (arr.GetLength(1) - 1));
             return false;
         }
 
@@ -181,13 +175,9 @@ namespace Grid
         {
             var x = GridContainer.Inst.X;
             var y = GridContainer.Inst.Y;
-
             cell = null;
-
             if (i < 0 || j < 0 || i >= x || j >= y) return false;
-
             cell = GridContainer.Inst.Grid[i, j];
-
             return true;
         }
     }

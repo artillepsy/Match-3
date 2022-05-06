@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Cells;
 using Items;
-using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -52,7 +51,6 @@ namespace Grid
             foreach (var cell in _grid)
             {
                 if(cell.Empty) continue;
-                
                 cellBuff.Add(cell);
             }
             return cellBuff;
@@ -65,9 +63,7 @@ namespace Grid
             _grid = new Cell[x, y];
 
             InitGrid();
-            
             FillCells();
-            
             SetEmptyCells();
         }
         
@@ -80,9 +76,7 @@ namespace Grid
                 for (var i = 0; i < x; i++)
                 {
                     var cell = Instantiate(cellPrefab, row);
-                    
                     cell.SetGridPosition(i, j);
-
                     _grid[i, j] = cell;
                 }
             }
@@ -95,19 +89,16 @@ namespace Grid
             while (counter < emptyCellCount)
             {
                 var i = Random.Range(0, x);
-                
                 var j = Random.Range(0, y);
-                
-                if(_grid[i, j].Empty) continue;
+
+                if (_grid[i, j].Empty) continue;
 
                 var item = _grid[i, j].Item;
-                
+
                 Destroy(item.gameObject);
-
-                _grid[i, j].Item = null;
-
-                _grid[i, j].SetEmptyStatus();
                 
+                _grid[i, j].Item = null;
+                _grid[i, j].SetEmptyStatus();
                 counter++;
             }
         }
@@ -119,10 +110,8 @@ namespace Grid
                 for (var i = 0; i < x; i++)
                 {
                     if(_grid[i, j].Empty) continue;
-                
                     var variant = GetFreeVariant(i, j);
-                    
-                    _grid[i, j].SetVariant(variant);
+                    _grid[i, j].InstantiateItem(variant);
                 }
             }
         }
@@ -134,7 +123,6 @@ namespace Grid
                 var variant = variants[Random.Range(0, variants.Count)];
                 
                 if(i > 1 && _grid[i-1, j].Item.Id == _grid[i-2, j].Item.Id && _grid[i-1, j].Item.Id == variant.Id) continue;
-                
                 if(j > 1 && _grid[i, j-1].Item.Id == _grid[i, j-2].Item.Id && _grid[i, j-1].Item.Id == variant.Id) continue;
                 
                 return variant;

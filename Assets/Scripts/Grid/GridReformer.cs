@@ -25,16 +25,12 @@ namespace Grid
                     if(cell.Empty) continue;
 
                     if (index >= variants.Count) index = 0;
-                    
                     Destroy(cell.Item.gameObject);
-                    
-                    cell.SetVariant(variants[index]);
+                    cell.InstantiateItem(variants[index]);
                 }
             }
             OnReformedToNoPossibleMatches?.Invoke();
         }
-        
-        
 
         private void ReformGrid()
         {
@@ -47,11 +43,8 @@ namespace Grid
                     if(cell.Empty) continue;
 
                     var cell2 = PopRandomCell(cells);
-
                     var item = cell.Item; 
-                
                     cell.Item = cell2.Item;
-
                     cell2.Item = item;
                 }
                 RemoveMatches();
@@ -62,7 +55,6 @@ namespace Grid
             foreach (var cell in GridContainer.Inst.Grid)
             {
                 if(cell.Empty) continue;
-                
                 ItemMover.Inst.MoveItem(cell);
             }
         }
@@ -72,23 +64,16 @@ namespace Grid
             while (true)
             {
                 var cells = GridContainer.Inst.GetFilledCells();
-                
                 var cellsToReform = new List<Cell>();
-                
                 GridCheckHelper.CheckXMatches(ref cellsToReform);
-                
                 GridCheckHelper.CheckYMatches(ref cellsToReform);
-
                 if (cellsToReform.Count == 0) break;
 
                 foreach (var cell in cellsToReform)
                 {
                     var cell2 = PopRandomCell(cells);
-
                     var item = cell.Item; 
-                
                     cell.Item = cell2.Item;
-
                     cell2.Item = item;
                 }
             } 
@@ -97,9 +82,7 @@ namespace Grid
         private Cell PopRandomCell(List<Cell> cells)
         {
             var cell = cells[Random.Range(0, cells.Count)];
-            
             cells.Remove(cell);
-            
             return cell;
         }
 
