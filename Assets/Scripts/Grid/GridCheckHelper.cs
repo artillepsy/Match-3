@@ -1,38 +1,28 @@
 ﻿using System.Collections.Generic;
 using Cells;
+using UnityEngine;
 
 namespace Grid
 {
     public static class GridCheckHelper
     {
-        private static readonly int[,] DiagonalCheckArray = 
+        private static readonly int[,] _diagonalCheckArray = new int[2, 5]
         {
             { -1,  1, 1, -1, -1},
             { -1, -1, 1,  1, -1}
         };
 
-        private static readonly int[,] CrossCheckArray = 
+        private static readonly int[,] _crossCheckArray = new int[2, 9]
         {
             {-1, 0, 1,-1, 1, 0,-1, 1,-1},
             { 1,-1, 1, 0,-1, 1,-1, 0, 1}
         };
         
-        public static bool FindPossibleMatches()
+        private static readonly int[,] _farCheckArray = new int[2, 8]
         {
-            var x = GridContainer.Inst.X;
-            var y = GridContainer.Inst.Y;
-            
-            for (var j = 1; j < y - 1; j++)
-            {
-                for (var i = 1; i < x - 1; i++)
-                {
-                    if (CanMatch(i, j, DiagonalCheckArray)) return true;
-                    
-                    if (CanMatch(i, j, CrossCheckArray)) return true;
-                }
-            }
-            return false;
-        }
+            { 0, 0, 2, 3, 0, 0,-2,-3},
+            {-2,-3, 0, 0, 2, 3, 0, 0}
+        };
         
         public static void CheckXMatches(ref List<Cell> cellBuff)
         {
@@ -126,26 +116,79 @@ namespace Grid
                 }
             }
         }
+        
+        public static bool FindPossibleMatches()
+        {
+            var x = GridContainer.Inst.X;
+            var y = GridContainer.Inst.Y;
+            
+            for (var j = 0; j < y; j++)
+            {
+                for (var i = 0; i < x; i++)
+                {
+                    if (CanMatch(i, j, _diagonalCheckArray))
+                    {
+                        Debug.Log("("+i+", "+ j +") diagonal");
+                        return true;
+                    }
+
+                    if (CanMatch(i, j, _crossCheckArray))
+                    {
+                        Debug.Log("("+i+", "+ j +") cross");
+                        return true;
+                    }
+
+                    if (CanMatch(i, j, _farCheckArray))
+                    {
+                        Debug.Log("("+i+", "+ j +") far");
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
         private static bool CanMatch(int i, int j, int[,] arr)
         {
             var grid = GridContainer.Inst.Grid;
-
+            
             if (grid[i, j].Empty) return false;
 
             var id = grid[i, j].Item.Id;
 
-            for (var k = 0; k < arr.Length-1; k++)
+            for (var k = 0; k < arr.GetLength(0) - 1; k++)
             {
-                var cell1 = grid[i + arr[0, k], j + arr[1, k]];
+                if (!TryGetCell(i + arr[0, k], j + arr[1, k], out var cell1)) continue;
                 
-                var cell2 = grid[i + arr[0, k+1], j + arr[1, k+1]];
+                if (!TryGetCell(i + arr[0, k + 1], j + arr[1, k + 1], out var cell2)) continue;
                 
                 if (cell1.Empty || cell2.Empty) continue;
 
-                if (cell1.Item.Id == id && cell2.Item.Id == id) return true;
+                if (cell1.Item.Id == id && cell2.Item.Id == id)
+                {
+                    Debug.Log(k);
+                    Debug.Log("("+arr[0, k]+", "+ arr[1, k] +") k");
+                    Debug.Log("("+arr[0, k+1]+", "+ arr[1, k+1] +") k+1");
+                    Debug.Log("("+cell1.X+", "+ cell1.Y +") cell1");
+                    Debug.Log("("+cell2.X+", "+ cell2.Y +") cell2");
+                    return true;
+                }
             }
             return false;
+        }
+
+        private static bool TryGetCell(int i, int j, out Cell cell)
+        {
+            var x = GridContainer.Inst.X;
+            var y = GridContainer.Inst.Y;
+
+            cell = null;
+
+            if (i < 0 || j < 0 || i >= x || j >= y) return false;
+
+            cell = GridContainer.Inst.Grid[i, j];
+
+            return true;
         }
     }
 }

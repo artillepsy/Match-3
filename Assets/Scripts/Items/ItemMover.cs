@@ -47,13 +47,7 @@ namespace Items
         
         private void ReduceRemainingCount()
         {
-           // Debug.Log("moved one cell");
-            
             if (--_remaining != 0) return;
-
-           // Debug.Log("OnAllMoved Invoked");
-            
-            //Debug.Break();
             
             OnAllMoved?.Invoke();
         }

@@ -3,7 +3,6 @@ using Grid;
 using Items;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 namespace Core
 {
@@ -26,11 +25,11 @@ namespace Core
             });
             
             Cell.OnClickCell.AddListener(CheckSelection);
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Mouse1)) SceneManager.LoadSceneAsync("Game");
+            
+            GridChecker.OnNoPossibleMatchesFound.AddListener((delay) =>
+            {
+                OnInputStatusChanged?.Invoke(false);
+            });
         }
 
         private void CheckSelection(Cell newCell)

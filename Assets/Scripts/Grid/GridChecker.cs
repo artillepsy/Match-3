@@ -8,9 +8,10 @@ namespace Grid
 {
     public class GridChecker : MonoBehaviour
     {
+        [SerializeField] private float delayOnNoPossibleMatches = 3f;
         public static readonly UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
         public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
-        public static readonly UnityEvent OnNoPossibleMatchesFound = new UnityEvent();
+        public static readonly UnityEvent<float> OnNoPossibleMatchesFound = new UnityEvent<float>();
         public GridChecker Inst { get; private set; }
 
         public void CheckForMatches()
@@ -18,25 +19,21 @@ namespace Grid
             var cellsToClear = new List<Cell>();
 
             GridCheckHelper.CheckXMatches(ref cellsToClear);
-            
+
             GridCheckHelper.CheckYMatches(ref cellsToClear);
 
-           // Debug.Log("Checked grid");
-
-          //  Debug.Break();
-
-          if (cellsToClear.Count > 0)
-          {
-              OnFoundMatches?.Invoke(cellsToClear);
-          }
-          else if (GridCheckHelper.FindPossibleMatches())
-          {
-              OnNoMatchesFound?.Invoke();
-          }
-          else
-          {
-              OnNoPossibleMatchesFound?.Invoke();
-          }
+            if (cellsToClear.Count > 0)
+            {
+                OnFoundMatches?.Invoke(cellsToClear);
+            }
+            else if (GridCheckHelper.FindPossibleMatches())
+            {
+                OnNoMatchesFound?.Invoke();
+            }
+            else
+            {
+                OnNoPossibleMatchesFound?.Invoke(delayOnNoPossibleMatches);
+            }
         }
 
         // после свапа проверить на наличие матчей. Если их нет - вернуть false
@@ -48,6 +45,8 @@ namespace Grid
         private void Start()
         {
             ItemMover.OnAllMoved.AddListener(CheckForMatches);
+            
+            GridReformer.OnReformedToNoPossibleMatches.AddListener(CheckForMatches);
         }
     }
 }

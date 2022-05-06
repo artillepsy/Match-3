@@ -43,6 +43,8 @@ namespace Grid
         
         public ItemVariant Variant => variants[Random.Range(0, variants.Count)];
 
+        public List<ItemVariant> Variants => variants;
+
         public List<Cell> GetFilledCells()
         {
             var cellBuff = new List<Cell>();
@@ -94,7 +96,7 @@ namespace Grid
             {
                 var i = Random.Range(0, x);
                 
-                var j = Random.Range(0, x);
+                var j = Random.Range(0, y);
                 
                 if(_grid[i, j].Empty) continue;
 
