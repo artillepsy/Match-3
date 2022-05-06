@@ -5,6 +5,35 @@ namespace Grid
 {
     public static class GridCheckHelper
     {
+        private static readonly int[,] DiagonalCheckArray = 
+        {
+            { -1,  1, 1, -1, -1},
+            { -1, -1, 1,  1, -1}
+        };
+
+        private static readonly int[,] CrossCheckArray = 
+        {
+            {-1, 0, 1,-1, 1, 0,-1, 1,-1},
+            { 1,-1, 1, 0,-1, 1,-1, 0, 1}
+        };
+        
+        public static bool FindPossibleMatches()
+        {
+            var x = GridContainer.Inst.X;
+            var y = GridContainer.Inst.Y;
+            
+            for (var j = 1; j < y - 1; j++)
+            {
+                for (var i = 1; i < x - 1; i++)
+                {
+                    if (CanMatch(i, j, DiagonalCheckArray)) return true;
+                    
+                    if (CanMatch(i, j, CrossCheckArray)) return true;
+                }
+            }
+            return false;
+        }
+        
         public static void CheckXMatches(ref List<Cell> cellBuff)
         {
             var x = GridContainer.Inst.X;
@@ -97,8 +126,8 @@ namespace Grid
                 }
             }
         }
-        
-        public static bool CanMatch(int i, int j, int[,] arr)
+
+        private static bool CanMatch(int i, int j, int[,] arr)
         {
             var grid = GridContainer.Inst.Grid;
 

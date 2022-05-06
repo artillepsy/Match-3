@@ -28,21 +28,21 @@ namespace Items
         public void MoveItem(Cell currentCell, Cell newCell)
         {
             var item = currentCell.Item;
+            
+            _remaining++;
 
             currentCell.Item = null;
             
             item.MoveToCell(newCell);
 
             newCell.Item = item;
-
-            _remaining++;
         }
 
         public void MoveItem(Cell cell)
         {
-            cell.Item.MoveToCell(cell);
-
             _remaining++;
+            
+            cell.Item.MoveToCell(cell);
         }
         
         private void ReduceRemainingCount()

@@ -10,6 +10,7 @@ namespace Grid
     {
         public static readonly UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
         public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
+        public static readonly UnityEvent OnNoPossibleMatchesFound = new UnityEvent();
         public GridChecker Inst { get; private set; }
 
         public void CheckForMatches()
@@ -23,36 +24,19 @@ namespace Grid
            // Debug.Log("Checked grid");
 
           //  Debug.Break();
-            
-            if (cellsToClear.Count > 0) OnFoundMatches?.Invoke(cellsToClear);
-            else OnNoMatchesFound?.Invoke();
-        }
 
-        public void FindPossibleMatches()
-        {
-            var x = GridContainer.Inst.X;
-            var y = GridContainer.Inst.Y;
-            
-            var diagonalCheckArray = new int[2, 5]
-            {
-                { -1,  1, 1, -1, -1},
-                { -1, -1, 1,  1, -1}
-            };
-            var crossCheckArray = new int[2, 9]
-            {
-                {-1, 0, 1,-1, 1, 0,-1, 1,-1},
-                { 1,-1, 1, 0,-1, 1,-1, 0, 1}
-            };
-            
-            for (var j = 1; j < y - 1; j++)
-            {
-                for (var i = 1; i < x - 1; i++)
-                {
-                    if (!GridCheckHelper.CanMatch(i, j, diagonalCheckArray)) continue;
-                    
-                    if (!GridCheckHelper.CanMatch(i, j, crossCheckArray)) continue;
-                }
-            }
+          if (cellsToClear.Count > 0)
+          {
+              OnFoundMatches?.Invoke(cellsToClear);
+          }
+          else if (GridCheckHelper.FindPossibleMatches())
+          {
+              OnNoMatchesFound?.Invoke();
+          }
+          else
+          {
+              OnNoPossibleMatchesFound?.Invoke();
+          }
         }
 
         // после свапа проверить на наличие матчей. Если их нет - вернуть false

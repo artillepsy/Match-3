@@ -43,12 +43,14 @@ namespace Grid
         
         public ItemVariant Variant => variants[Random.Range(0, variants.Count)];
 
-        public List<Cell> GetAllCells()
+        public List<Cell> GetFilledCells()
         {
             var cellBuff = new List<Cell>();
 
             foreach (var cell in _grid)
             {
+                if(cell.Empty) continue;
+                
                 cellBuff.Add(cell);
             }
             return cellBuff;
