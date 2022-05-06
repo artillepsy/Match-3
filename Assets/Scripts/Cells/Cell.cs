@@ -50,7 +50,10 @@ namespace Cells
         {
             _btn = GetComponent<Button>();
 
-            _btn.onClick.AddListener(() => OnClickCell?.Invoke(this));
+            _btn.onClick.AddListener(() =>
+            {
+                OnClickCell?.Invoke(this);
+            });
         }
 
         private void Start()
@@ -63,6 +66,8 @@ namespace Cells
             if (_empty) return;
   
             _btn.enabled = status;
+
+            _btn.interactable = status;
         }
     }
 }

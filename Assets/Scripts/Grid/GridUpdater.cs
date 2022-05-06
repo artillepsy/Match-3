@@ -90,13 +90,23 @@ namespace Grid
 
         private void ClearCells(List<Cell> cells)
         {
-            //Debug.Log("cell count: "+ cells.Count);
+          //  Debug.Log("cell count: " + cells.Count);
+           // Debug.Log("-----------------------------------");
             
             foreach (var cell in cells)
             {
                 var item = cell.Item;
+                if (!item)
+                {
+                    //Debug.Log("null");
+                    Debug.LogError("Del: ("+cell.X+", "+cell.Y+"). Item: null "+ item);
+                    
+                    Debug.Break();
+                    
+                    continue;
+                }
 
-                Debug.Log("Deleted: ("+cell.X+", "+cell.Y+"). Item: "+ item);
+               // Debug.Log("Del: ("+cell.X+", "+cell.Y+"). Item: "+ item);
               
                 item.transform.SetParent(null);
                 
@@ -104,6 +114,8 @@ namespace Grid
                 
                 Destroy(item.gameObject);
             }
+
+          //  Debug.Break();
         }
     }
 }

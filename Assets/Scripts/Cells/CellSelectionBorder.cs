@@ -7,6 +7,7 @@ namespace Cells
     public class CellSelectionBorder : MonoBehaviour
     {
         private Image _image;
+        private bool _enabled = true;
         private void Start()
         {
             _image = GetComponent<Image>();
@@ -17,13 +18,15 @@ namespace Cells
             
             InputListener.OnInputStatusChanged.AddListener((status) =>
             {
+                _enabled = status;
+                
                 if (!status) _image.enabled = false;
             });
         }
 
         private void UpdatePosition(Cell cell)
         {
-            if (!_image.enabled) _image.enabled = true;
+            if (_enabled) _image.enabled = true;
             
             transform.SetParent(cell.transform, false);
         }
