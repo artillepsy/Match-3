@@ -14,7 +14,7 @@ namespace Grid
         {
             var grid = GridContainer.Inst.Grid;
             var variants = GridContainer.Inst.Variants;
-            var index = Random.Range(0, variants.Count);
+            var index = 0;
 
             for (var j = 0; j < GridContainer.Inst.Y; j++)
             {
@@ -48,7 +48,6 @@ namespace Grid
                     cell2.Item = item;
                 }
                 RemoveMatches();
-
                 if (GridCheckHelper.FindPossibleMatches()) break;
             }  
 
@@ -65,8 +64,10 @@ namespace Grid
             {
                 var cells = GridContainer.Inst.GetFilledCells();
                 var cellsToReform = new List<Cell>();
+                
                 GridCheckHelper.CheckXMatches(ref cellsToReform);
                 GridCheckHelper.CheckYMatches(ref cellsToReform);
+                
                 if (cellsToReform.Count == 0) break;
 
                 foreach (var cell in cellsToReform)

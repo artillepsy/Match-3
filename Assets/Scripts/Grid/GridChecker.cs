@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Cells;
+using Inputs;
 using Items;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,6 +10,7 @@ namespace Grid
     public class GridChecker : MonoBehaviour
     {
         [SerializeField] private float delayOnNoPossibleMatches = 3f;
+        private CellButtonsListener _listener;
         public static readonly UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
         public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
         public static readonly UnityEvent<float> OnNoPossibleMatchesFound = new UnityEvent<float>();
@@ -20,13 +22,14 @@ namespace Grid
             GridCheckHelper.CheckXMatches(ref cellsToClear);
             GridCheckHelper.CheckYMatches(ref cellsToClear);
 
-            if (cellsToClear.Count > 0)  OnFoundMatches?.Invoke(cellsToClear);
+            if (cellsToClear.Count > 0) OnFoundMatches?.Invoke(cellsToClear);
             else if (GridCheckHelper.FindPossibleMatches()) OnNoMatchesFound?.Invoke();
-            else OnNoPossibleMatchesFound?.Invoke(delayOnNoPossibleMatches);
+            else if(!_listener.ShouldUndo) OnNoPossibleMatchesFound?.Invoke(delayOnNoPossibleMatches);
         }
 
         private void Start()
         {
+            _listener = FindObjectOfType<CellButtonsListener>();
             ItemMover.OnAllMoved.AddListener(CheckForMatches);
             GridReformer.OnReformedToNoPossibleMatches.AddListener(CheckForMatches);
         }

@@ -13,6 +13,8 @@ namespace Inputs
         private Cell _newCell;
         private bool _shouldUndo = false;
 
+        public bool ShouldUndo => _shouldUndo;
+
         private void Start()
         {
             GridChecker.OnFoundMatches.AddListener((cells) => _shouldUndo = false);

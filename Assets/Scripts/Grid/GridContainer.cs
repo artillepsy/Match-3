@@ -12,9 +12,9 @@ namespace Grid
     public class GridContainer : MonoBehaviour
     {
         [Header("Grid dimension")]
-        [Range(6, 10)]
+        [Range(1, 10)]
         [SerializeField] private int x = 6;
-        [Range(6, 10)]
+        [Range(1, 10)]
         [SerializeField] private int y = 6;
         
         [Header("Empty space")] 

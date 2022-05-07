@@ -1,27 +1,35 @@
 ﻿using System.Collections.Generic;
 using Cells;
-using UnityEngine;
 
 namespace Grid
 {
+    /// <summary>
+    /// Класс, содержащий реализацию методов для проверки сетки
+    /// </summary>
     public static class GridCheckHelper
     {
-        private static readonly int[,] _diagonalCheckArray = new int[2, 5]
+        private static readonly int[,] _diagonalCheckArray = new int[4, 5]
         {
-            { -1,  1, 1, -1, -1},
-            { -1, -1, 1,  1, -1}
+            { -1,  1, 1, -1, -1}, 
+            { -1, -1, 1,  1, -1},
+            {  0,  1, 1,  0, -1},// Х пустышек
+            { -1,  0, 1,  1,  0} // У пустышек
         };
 
-        private static readonly int[,] _crossCheckArray = new int[2, 9]
+        private static readonly int[,] _crossCheckArray = new int[4, 9]
         {
             {-1, 0, 1,-1, 1, 0,-1, 1,-1},
-            { 1,-1, 1, 0,-1, 1,-1, 0, 1}
+            { 1,-1, 1, 0,-1, 1,-1, 0, 1},
+            { 0, 0, 1, 1, 0, 0,-1,-1, 0}, // последний не исп.
+            {-1,-1, 0, 0, 1, 1, 0, 0, 0} 
         };
         
-        private static readonly int[,] _farCheckArray = new int[2, 8]
+        private static readonly int[,] _farCheckArray = new int[4, 8]
         {
             { 0, 0, 2, 3, 0, 0,-2,-3},
-            {-2,-3, 0, 0, 2, 3, 0, 0}
+            {-2,-3, 0, 0, 2, 3, 0, 0},
+            { 0, 0, 1, 1, 0, 0,-1,-1},
+            {-1,-1, 0, 0, 1, 1, 0, 0}
         };
         
         public static void CheckXMatches(ref List<Cell> cellBuff)
@@ -56,13 +64,11 @@ namespace Grid
                     if (counter < 3)
                     {
                         counter = 1; 
-
                         continue;
                     }
                     for (var k = (i == x - 1 && !startCheck) ? i : (i - 1); counter > 0; k--, counter--)
                     {
                         if (cellBuff.Contains(grid[k, j])) continue;
-                            
                         cellBuff.Add(grid[k, j]);
                     } 
                     counter = 1;
@@ -93,7 +99,6 @@ namespace Grid
                     else if (id != grid[i, j].Item.Id)
                     {
                         id = grid[i, j].Item.Id;
-                        
                         startCheck = true;
                     }
                     else counter++;
@@ -103,13 +108,11 @@ namespace Grid
                     if (counter < 3)
                     {
                         counter = 1;
-                        
                         continue;
                     }
                     for (var k = (j == y - 1 && !startCheck) ? j : (j - 1); counter > 0; k--, counter--)
                     {
                         if (cellBuff.Contains(grid[i, k])) continue;
-                            
                         cellBuff.Add(grid[i, k]);
                     } 
                     counter = 1;
@@ -126,14 +129,9 @@ namespace Grid
             {
                 for (var i = 0; i < x; i++)
                 { 
-                    Debug.Log(" ");
-                    Debug.Log("elem ("+i+", "+ j +") ");
-                    Debug.Log(" ");
-                    
                     if (CanMatch(i, j, _diagonalCheckArray)) return true;
                     if (CanMatch(i, j, _crossCheckArray)) return true;
                     if (CanMatch(i, j, _farCheckArray)) return true;
-                   
                 }
             }
             return false;
@@ -141,7 +139,6 @@ namespace Grid
 
         private static bool CanMatch(int i, int j, int[,] arr)
         {
-            Debug.Log("CanMatch");
             var grid = GridContainer.Inst.Grid;
             if (grid[i, j].Empty) return false;
             var id = grid[i, j].Item.Id;
@@ -150,24 +147,11 @@ namespace Grid
             {
                 if (!TryGetCell(i + arr[0, k], j + arr[1, k], out var cell1)) continue;
                 if (!TryGetCell(i + arr[0, k + 1], j + arr[1, k + 1], out var cell2)) continue;
+                if (grid[i + arr[2, k], j + arr[3, k]].Empty) continue; // проверка на пустышку в месте "стыковки"
                 if (cell1.Empty || cell2.Empty) continue;
 
-
-
-                if (cell1.Item.Id == id && cell2.Item.Id == id)
-                {
-                   // Debug.Log("return true");
-                    return true;
-                }
-                
-                /*Debug.Log("[k] ("+arr[0, k]+", "+ arr[1, k] +") ");
-                Debug.Log("[k+1] ("+arr[0, k+1]+", "+ arr[1, k+1] +") ");
-                Debug.Log("c1 ("+cell1.X+", "+ cell1.Y +") id: "+ cell1.Item.Id);
-                Debug.Log("c2 ("+cell2.X+", "+ cell2.Y +")  id: "+ cell2.Item.Id);
-                Debug.Log("---------------------------------");*/
+                if (cell1.Item.Id == id && cell2.Item.Id == id) return true;
             }
-
-            Debug.Log("k = " + (arr.GetLength(1) - 1));
             return false;
         }
 
