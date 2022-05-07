@@ -7,14 +7,24 @@ using UnityEngine.Events;
 
 namespace Grid
 {
+    /// <summary>
+    /// Класс, проверяющий сетку с ячейками после перемещения предметов
+    /// </summary>
     public class GridChecker : MonoBehaviour
     {
         [SerializeField] private float delayOnNoPossibleMatches = 3f;
         private CellButtonsListener _listener;
         public static readonly UnityEvent<List<Cell>> OnFoundMatches = new UnityEvent<List<Cell>>();
-        public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
         public static readonly UnityEvent<float> OnNoPossibleMatchesFound = new UnityEvent<float>();
+        public static readonly UnityEvent OnNoMatchesFound = new UnityEvent();
 
+        /// <summary>
+        /// Проверка сетки на три и более в ряд.
+        /// Если есть три+ в ряд, то вызывается ивент, передающий
+        /// ячейки в качестве параметров. Если три в ряд нет, то идёт проверка
+        /// на возможные три+ в ряд. В результате успеха или провала проверки
+        /// вызываются соответствующие ивенты
+        /// </summary>
         private void CheckForMatches()
         {
             var cellsToClear = new List<Cell>();

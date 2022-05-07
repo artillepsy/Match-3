@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Cells;
 using Items;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Grid
@@ -29,21 +30,16 @@ namespace Grid
         [SerializeField] private Cell cellPrefab;
         
         private Cell[,] _grid;
-
-        public Cell[,] Grid => _grid;
-
         public static GridContainer Inst { get; private set; }
-
+        public Cell[,] Grid => _grid;
         public float Ystep => Mathf.Abs(_grid[0, 0].transform.position.y - _grid[0, 1].transform.position.y);
-
         public int X => x;
-        
         public int Y => y;
-        
         public ItemVariant Variant => variants[Random.Range(0, variants.Count)];
-
         public List<ItemVariant> Variants => variants;
-
+        /// <summary>
+        /// Возврат ячеек в виде списка
+        /// </summary>
         public List<Cell> GetFilledCells()
         {
             var cellBuff = new List<Cell>();
@@ -65,8 +61,13 @@ namespace Grid
             InitGrid();
             FillCells();
             SetEmptyCells();
+            
+            if (GridCheckHelper.FindPossibleMatches()) return;
+            FindObjectOfType<GridReformer>().ReformGrid();
         }
-        
+        /// <summary>
+        /// Создание объектов-строк и ячеек в них
+        /// </summary>
         private void InitGrid()
         {
             for (var j = 0; j < y; j++)
@@ -76,33 +77,14 @@ namespace Grid
                 for (var i = 0; i < x; i++)
                 {
                     var cell = Instantiate(cellPrefab, row);
-                    cell.SetGridPosition(i, j);
+                    cell.SetPositionInGrid(i, j);
                     _grid[i, j] = cell;
                 }
             }
         }
-
-        private void SetEmptyCells()
-        {
-            var counter = 0;
-            
-            while (counter < emptyCellCount)
-            {
-                var i = Random.Range(0, x);
-                var j = Random.Range(0, y);
-
-                if (_grid[i, j].Empty) continue;
-
-                var item = _grid[i, j].Item;
-
-                Destroy(item.gameObject);
-                
-                _grid[i, j].Item = null;
-                _grid[i, j].SetEmptyStatus();
-                counter++;
-            }
-        }
-
+        /// <summary>
+        /// Заполнение ячеек предметами с проверкой на три+ в ряд
+        /// </summary>
         private void FillCells()
         {
             for (var j = 0; j < y; j++)
@@ -115,7 +97,30 @@ namespace Grid
                 }
             }
         }
+        /// <summary>
+        /// Заполнение сетки пустышками
+        /// </summary>
+        private void SetEmptyCells()
+        {
+            var counter = 0;
+            while (counter < emptyCellCount)
+            {
+                var i = Random.Range(0, x);
+                var j = Random.Range(0, y);
 
+                if (_grid[i, j].Empty) continue;
+
+                var item = _grid[i, j].Item;
+                Destroy(item.gameObject);
+                _grid[i, j].Item = null;
+                _grid[i, j].MakeEmpty();
+                counter++;
+            }
+        }
+        /// <summary>
+        /// Взятие рандомного значения предмета с
+        /// проверкой на собирание три+ в ряд
+        /// </summary>
         private ItemVariant GetFreeVariant(int i, int j)
         {
             while (true)

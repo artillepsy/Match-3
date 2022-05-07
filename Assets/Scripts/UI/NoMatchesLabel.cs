@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace UI
 {
+    /// <summary>
+    /// Класс, показывающий надпись в случае отсутствия возможных ходов
+    /// </summary>
     public class NoMatchesLabel : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI noMatchesLabel;
@@ -16,7 +19,7 @@ namespace UI
                 Invoke(nameof(DisableLabel), delay);
             });
         }
-
+        
         private void DisableLabel() => noMatchesLabel.enabled = false;
     }
 }

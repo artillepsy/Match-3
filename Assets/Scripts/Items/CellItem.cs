@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 namespace Items
 {
+    /// <summary>
+    /// Класс кликабельной ячейки. Содержит в себе объект с
+    /// уникальным идентификатором
+    /// </summary>
     public class CellItem : MonoBehaviour
     {
         [SerializeField] private float speed = 500f;
@@ -16,21 +20,30 @@ namespace Items
         private int _id;
         
         public int Id => _id;
-        
+        /// <summary>
+        /// Создание предмета с заданными данными
+        /// внутри себя
+        /// </summary>
         public void SetVariant(ItemVariant variant)
         {
             var image = GetComponent<Image>();
             image.color = variant.ItemColor;
             _id = variant.Id;
         }
-
+        /// <summary>
+        /// Движение к позиции указанной ячейки
+        /// </summary>
         public void MoveToCell(Cell cell)
         {
             _endPosition = cell.transform.position;
             transform.SetParent(cell.transform);
             StartCoroutine(MoveCO());
         }
-
+        /// <summary>
+        /// Движение с константной скоростью,
+        /// пока текущая позиция не будет равна заданной.
+        /// Скорость не зависит от FPS
+        /// </summary>
         private IEnumerator MoveCO()
         {
             while (true)

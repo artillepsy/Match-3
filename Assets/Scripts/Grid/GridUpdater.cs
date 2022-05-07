@@ -2,13 +2,25 @@
 using Cells;
 using Items;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Grid
 {
+    /// <summary>
+    /// Класс, удаляющий три+ в ряд элементы и
+    /// заполняющий сетку снизу 
+    /// </summary>
     public class GridUpdater : MonoBehaviour
     {
         [SerializeField] private CellItem itemPrefab;
 
+        public static UnityEvent<List<int>> OnCachedClearedIds = new UnityEvent<List<int>>();
+        /// <summary>
+        /// Обновление сетки после удаления в ней
+        /// собранных три+ в ряд элементов.
+        /// Вызывается после того, как в сетке
+        /// были найдены три+ в ряд элементы
+        /// </summary>
         private void UpdateGrid()
         {
             var busyPoints = new List<Vector2>();
@@ -57,9 +69,12 @@ namespace Grid
                 UpdateGrid();
             });
         }
-
+        /// <summary>
+        /// Удаление всех собранных три+ в ряд элементов
+        /// </summary>
         private void ClearCells(List<Cell> cells)
         {
+            var ids = new List<int>();
             foreach (var cell in cells)
             {
                 var item = cell.Item;
@@ -69,10 +84,12 @@ namespace Grid
                     Debug.Break();
                     continue;
                 }
+                ids.Add(item.Id);
                 item.transform.SetParent(null);
                 cell.Item = null;
                 Destroy(item.gameObject);
             }
+            OnCachedClearedIds?.Invoke(ids);
         }
     }
 }

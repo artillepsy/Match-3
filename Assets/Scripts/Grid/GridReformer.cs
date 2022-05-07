@@ -7,10 +7,21 @@ using Random = UnityEngine.Random;
 
 namespace Grid
 {
+    /// <summary>
+    /// Класс, Переставляющий предметы в ячейках различными
+    /// способами
+    /// </summary>
     public class GridReformer : MonoBehaviour
     {
         public static readonly UnityEvent OnReformedToNoPossibleMatches = new UnityEvent();
-        public void ReformGridWithNoMatches()
+        /// <summary>
+        /// Переставление предметов в ячейках по
+        /// заданному шаблону для теста работы
+        /// анализатора возможных 3+ в ряд. Метод
+        /// Берет случайные значения, т.е. предыдущие
+        /// предметы в сетке не учитываются
+        /// </summary>
+        public void ReformGridWithNoPossibleMatches()
         {
             var grid = GridContainer.Inst.Grid;
             var variants = GridContainer.Inst.Variants;
@@ -31,8 +42,13 @@ namespace Grid
             }
             OnReformedToNoPossibleMatches?.Invoke();
         }
-
-        private void ReformGrid()
+        /// <summary>
+        /// Реформирование элементов сетки в случае
+        /// отсутствия возможных ходов. Все элементы
+        /// с предыдущего расположения сохраняются и
+        /// получают новую случайную позицию
+        /// </summary>
+        public void ReformGrid()
         {
             while(true)
             {
@@ -57,7 +73,11 @@ namespace Grid
                 ItemMover.Inst.MoveItem(cell);
             }
         }
-
+        /// <summary>
+        /// Перестановка элементов рандомным образом
+        /// в случае нахождения 3+ в ряд во время 
+        /// реформирования сетки
+        /// </summary>
         private void RemoveMatches()
         {
             while (true)
@@ -79,7 +99,10 @@ namespace Grid
                 }
             } 
         }
-        
+        /// <summary>
+        /// Взятие из списка рандомного элемента
+        /// с его удалением из этого списка
+        /// </summary>
         private Cell PopRandomCell(List<Cell> cells)
         {
             var cell = cells[Random.Range(0, cells.Count)];

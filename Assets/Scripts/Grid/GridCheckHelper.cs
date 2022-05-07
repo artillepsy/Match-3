@@ -4,34 +4,52 @@ using Cells;
 namespace Grid
 {
     /// <summary>
-    /// Класс, содержащий реализацию методов для проверки сетки
+    /// Класс, содержащий методы для проверки сетки с ячейками
+    /// на три+ в ряд или возможность их собрать
     /// </summary>
     public static class GridCheckHelper
     {
+        /// <summary>
+        /// Массив позиций для диагональной проверки возможных три+ в ряд.
+        /// Два верхних столбца - позиции Х и У ячеек для проверки на одинаковость.
+        /// Два нижних столбца - позиции Х и У ячеек для проверки на пустоту.
+        /// </summary>
         private static readonly int[,] _diagonalCheckArray = new int[4, 5]
         {
             { -1,  1, 1, -1, -1}, 
             { -1, -1, 1,  1, -1},
-            {  0,  1, 1,  0, -1},// Х пустышек
+            {  0,  1, 1,  0, -1}, // Х пустышек
             { -1,  0, 1,  1,  0} // У пустышек
         };
-
+        /// <summary>
+        /// Массив позиций для крестовой проверки возможных три+ в ряд.
+        /// Два верхних столбца - позиции Х и У ячеек для проверки на одинаковость.
+        /// Два нижних столбца - позиции Х и У ячеек для проверки на пустоту.
+        /// Последняя нижняя позиция не используется
+        /// </summary>
         private static readonly int[,] _crossCheckArray = new int[4, 9]
         {
             {-1, 0, 1,-1, 1, 0,-1, 1,-1},
             { 1,-1, 1, 0,-1, 1,-1, 0, 1},
-            { 0, 0, 1, 1, 0, 0,-1,-1, 0}, // последний не исп.
-            {-1,-1, 0, 0, 1, 1, 0, 0, 0} 
+            { 0, 0, 1, 1, 0, 0,-1,-1, 0}, // Х пустышек. последний не испьзуется
+            {-1,-1, 0, 0, 1, 1, 0, 0, 0}  // У пустышек
         };
-        
+        /// <summary>
+        /// Массив позиций для дальней проверки возможных три+ в ряд.
+        /// Два верхних столбца - позиции Х и У ячеек для проверки на одинаковость.
+        /// Два нижних столбца - позиции Х и У ячеек для проверки на пустоту.
+        /// </summary>
         private static readonly int[,] _farCheckArray = new int[4, 8]
         {
             { 0, 0, 2, 3, 0, 0,-2,-3},
             {-2,-3, 0, 0, 2, 3, 0, 0},
-            { 0, 0, 1, 1, 0, 0,-1,-1},
-            {-1,-1, 0, 0, 1, 1, 0, 0}
+            { 0, 0, 1, 1, 0, 0,-1,-1}, // Х пустышек
+            {-1,-1, 0, 0, 1, 1, 0, 0}  // У пустышек
         };
-        
+        /// <summary>
+        /// Метод для горизонтальной проверки на три+ в ряд.
+        /// Заносит в случае нахождения ячейки в список
+        /// </summary>
         public static void CheckXMatches(ref List<Cell> cellBuff)
         {
             var x = GridContainer.Inst.X;
@@ -45,28 +63,29 @@ namespace Grid
 
                 for (var i = 0; i < x; i++)
                 {
-                    var startCheck = false;
+                    var needCheck = false;
 
-                    if (grid[i, j].Empty)
+                    if (grid[i, j].Empty) 
                     {
                         id = -1;
-                        startCheck = true;
+                        needCheck = true;
                     }
                     else if (id != grid[i, j].Item.Id)
                     {
                         id = grid[i, j].Item.Id;
-                        startCheck = true;
+                        needCheck = true;
                     }
                     else counter++;
 
-                    if (!startCheck && i != x - 1) continue;
+                    if (!needCheck && i != x - 1) continue;
                     
                     if (counter < 3)
                     {
                         counter = 1; 
                         continue;
                     }
-                    for (var k = (i == x - 1 && !startCheck) ? i : (i - 1); counter > 0; k--, counter--)
+                    
+                    for (var k = (i == x - 1 && !needCheck) ? i : (i - 1); counter > 0; k--, counter--)
                     {
                         if (cellBuff.Contains(grid[k, j])) continue;
                         cellBuff.Add(grid[k, j]);
@@ -75,7 +94,10 @@ namespace Grid
                 }
             }
         }
-        
+        /// <summary>
+        /// Метод для вертикальной проверки на три+ в ряд.
+        /// Заносит в случае нахождения ячейки в список
+        /// </summary>
         public static void CheckYMatches(ref List<Cell> cellBuff)
         {
             var x = GridContainer.Inst.X;
@@ -89,28 +111,28 @@ namespace Grid
 
                 for (var j = 0; j < y; j++)
                 {
-                    var startCheck = false;
+                    var needCheck = false;
 
                     if (grid[i, j].Empty)
                     {
                         id = -1;
-                        startCheck = true;
+                        needCheck = true;
                     }
                     else if (id != grid[i, j].Item.Id)
                     {
                         id = grid[i, j].Item.Id;
-                        startCheck = true;
+                        needCheck = true;
                     }
                     else counter++;
 
-                    if (!startCheck && j != y - 1) continue;
+                    if (!needCheck && j != y - 1) continue;
                     
                     if (counter < 3)
                     {
                         counter = 1;
                         continue;
                     }
-                    for (var k = (j == y - 1 && !startCheck) ? j : (j - 1); counter > 0; k--, counter--)
+                    for (var k = (j == y - 1 && !needCheck) ? j : (j - 1); counter > 0; k--, counter--)
                     {
                         if (cellBuff.Contains(grid[i, k])) continue;
                         cellBuff.Add(grid[i, k]);
@@ -119,7 +141,9 @@ namespace Grid
                 }
             }
         }
-        
+        /// <summary>
+        /// Проверка на то, можно ли собрать три+ в ряд
+        /// </summary>
         public static bool FindPossibleMatches()
         {
             var x = GridContainer.Inst.X;
@@ -136,7 +160,11 @@ namespace Grid
             }
             return false;
         }
-
+        /// <summary>
+        /// Проверка соседних ячеек на комбинацию, которая
+        /// может дать три+ в ряд. Здесь также проверяется,
+        /// не мешают ли комбинации пустые ячейки
+        /// </summary>
         private static bool CanMatch(int i, int j, int[,] arr)
         {
             var grid = GridContainer.Inst.Grid;
@@ -154,7 +182,11 @@ namespace Grid
             }
             return false;
         }
-
+        /// <summary>
+        /// Попытка найти ячейку по заданным i и j.
+        /// В случае нахождения значение записывается в
+        /// выходной параметр 
+        /// </summary>
         private static bool TryGetCell(int i, int j, out Cell cell)
         {
             var x = GridContainer.Inst.X;
