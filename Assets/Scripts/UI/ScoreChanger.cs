@@ -29,18 +29,13 @@ namespace UI
                 var totalId = remainingIds[0];
                 var idsToCalculate = remainingIds.Where(id => id == totalId).ToList();
 
-                switch (idsToCalculate.Count)
+                _totalScore += 10;
+
+                for (var i = 3; i < idsToCalculate.Count; i++)
                 {
-                    case 3:
-                        _totalScore += 10;
-                        break;
-                    case 4:
-                        _totalScore += 15;
-                        break;
-                    case 5:
-                        _totalScore += 20;
-                        break;
+                    _totalScore += 5;
                 }
+                
                 remainingIds = remainingIds.Except(idsToCalculate).ToList();
             }
             amountLabel.text = _totalScore.ToString();
